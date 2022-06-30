@@ -206,7 +206,7 @@ export default class extends Vue {
       if (valid) {
         this.loading = true
         const res = await UserModule.Login(this.loginForm)
-        if (res.code === 0) {
+        if (res.isSuccess) {
           await UserModule.GetUserInfo()
           userInfo.userId = res.data.userId
           userInfo.userName = res.data.userName

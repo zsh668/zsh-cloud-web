@@ -66,7 +66,7 @@ request({
 // 岗位
 export const getAllStation = (params: any) =>
   request({
-    url: `/system/stations/list`,
+    url: `/system/stations`,
     method: 'get',
     params
   })
