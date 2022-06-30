@@ -45,12 +45,12 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       // token失效
-      if (res.code === -9 || res.code === 40001 || res.code === 40003) {
+      if (res.code === 524 || res.code === 525 || res.code === 526 || res.code === 527) {
         UserModule.LogOut()
         router.replace({ path: '/login' })
       }
       const msg = res.msg ? res.msg.slice(0, 4) : ''
-      if (res.code === -1 && msg === '权限不足') {
+      if (res.code === 401 && msg === '权限不足') {
         response.data.msg = msg
       }
       console.log('response', response)

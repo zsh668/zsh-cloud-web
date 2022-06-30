@@ -102,7 +102,7 @@ class User extends VuexModule implements IUserState {
     account = account.trim()
     const { data } = await login({ account, password, code, key })
     if (data.data !== '') {
-      if (data.code === 0) {
+      if (data.isSuccess) {
         const token = data.data.access_token
         this.SET_TOKEN(token)
       }
@@ -139,13 +139,9 @@ class User extends VuexModule implements IUserState {
   @Action
   public async GetUserAndPermission() {
     const { data } = await getUserAndPermissionInfo()
-    let userInfo = {} as any
-    if (data.code === 0) {
-      userInfo.userId = data.data.id
-      userInfo.userName = data.data.userName
-      userInfo.avatar = ''
-      setUser(userInfo)
-      this.SET_PERMISSION(data.data.permissionsList)
+    if (data.isSuccess) {
+      setUser(data.data.user)
+      this.SET_PERMISSION(data.data.permissionCodes)
     }
   }
 
