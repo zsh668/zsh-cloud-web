@@ -6,8 +6,8 @@ import {
   getModule
 } from 'vuex-module-decorators'
 import { getRouterData, getUserAndPermissionInfo } from '@/api/api'
-import { login } from '@/pages/base/api/api'
-import { getAllList } from '@/pages/adhibition/api/index'
+import { login } from '@/pages/auth/base/api/api'
+import { getAllList } from '@/pages/system/adhibition/api/index'
 import {
   getToken,
   // setToken,

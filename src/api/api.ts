@@ -39,7 +39,7 @@ export const getRole = (data: any) =>
 export const getRepelRole = (params: any) =>
   request({
     // url: `/authority/role`,/authority/role/page
-    url: `/system/roles/page`,
+    url: `/system/roles`,
     method: 'get',
     params
   })
