@@ -53,7 +53,7 @@ service.interceptors.response.use(
       if (res.code === 401 && msg === '权限不足') {
         response.data.msg = msg
       }
-      console.log('response', response)
+      // console.log('response', response)
       // eslint-disable-next-line no-prototype-builtins
       if (response.data.hasOwnProperty('isSuccess')) {
         if (!response.data.isSuccess) {

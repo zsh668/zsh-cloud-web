@@ -71,10 +71,10 @@ import { AppModule } from '@/store/modules/app'
 import { UserModule } from '@/store/modules/user'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
-import { alterPassword } from '@/pages/base/api/api'
+import { alterPassword } from '@/pages/auth/base/api/api'
 import { ElForm } from 'element-ui/types/form'
 import { getUser } from '@/utils/cookies'
-import moreDialog from '@/pages/adhibition/components/moreList.vue'
+import moreDialog from '@/pages/system/adhibition/components/moreList.vue'
 @Component({
   name: 'Navbar',
   components: {
