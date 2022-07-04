@@ -8,9 +8,9 @@
           <el-form ref="ruleForm" :inline="true" :model="searchData">
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="name" label="菜单名称：">
+                <el-form-item prop="menuName" label="菜单名称：">
                   <el-input
-                    v-model="searchData.name"
+                    v-model="searchData.menuName"
                     placeholder="请输入"
                     suffix-icon="el-icon-search"
                     style="width: 197px;"
@@ -51,7 +51,7 @@
                 </span>
               </template>
               <template slot-scope="{ row }">
-                {{ ellipsis(row.name, 6) }}
+                {{ ellipsis(row.menuName, 6) }}
               </template>
             </el-table-column>
             <el-table-column>
@@ -62,8 +62,8 @@
               </template>
               <template slot-scope="{ row }">
                 <div @click.stop>
-                  <el-switch v-if="row.parentIsEnable===false&&row.isEnable===true" v-model="row.isEnable" :disabled="!$hasPermission('menu:update')" @change="handleState(row)" />
-                  <el-switch v-else v-model="row.isEnable" :disabled="!$hasPermission('menu:update') || row.parentIsEnable===false" @change="handleState(row)" />
+                  <el-switch v-if="row.parentStatus===false&&row.status===true" v-model="row.status" :disabled="!$hasPermission('menu:update')" @change="handleState(row)" />
+                  <el-switch v-else v-model="row.status" :disabled="!$hasPermission('menu:update') || row.parentStatus===false" @change="handleState(row)" />
                 </div>
               </template>
             </el-table-column>
@@ -79,8 +79,8 @@
               </template>
               <template slot-scope="{ row }">
                 <div class="operation">
-                  <el-button v-if="$hasPermission('menu:update')" class="inputText" :disabled="!row.isEnable" @click.stop="handleEdit(row)">修改</el-button>
-                  <el-button v-if="$hasPermission('menu:delete')" class="inputText delect" :disabled="!row.isEnable" @click.stop="handleDelete(row)">删除</el-button>
+                  <el-button v-if="$hasPermission('menu:update')" class="inputText" :disabled="!row.status" @click.stop="handleEdit(row)">修改</el-button>
+                  <el-button v-if="$hasPermission('menu:delete')" class="inputText delect" :disabled="!row.status" @click.stop="handleDelete(row)">删除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -178,15 +178,15 @@ export default class extends Vue {
   // private roleData = {} as any
   private roleIds = [] as any
   private formData={
-    name: '', // 名称
+    menuName: '', // 名称
     path: '', // 路由
     parentId: '', // 上级类目
     icon: '', // 图标
-    isEnable: true, // 状态
+    status: true, // 状态
     sortValue: '' // 排序
   } as any
   private searchData = {
-    name: '',
+    menuName: '',
     size: 10,
     current: 1,
     menuId: ''
@@ -198,8 +198,8 @@ export default class extends Vue {
     isDeleVisible: false,
     isStatusVisible: false,
     type: 'add',
-    isEnable: false,
-    name: '',
+    status: false,
+    menuName: '',
     parentId: '',
     title: ''
   }
@@ -233,7 +233,7 @@ export default class extends Vue {
   private async getMenuList() {
     this.listLoading = true
     const parent = {
-      name: this.searchData.name
+      menuName: this.searchData.menuName
     } as any
     const { data } = await getAllMenu(parent)
     if (data.isSuccess === true) {
@@ -260,7 +260,7 @@ export default class extends Vue {
     this.listLoading = true
     const { data } = await getmenuList(this.searchData)
     if (data.isSuccess === true) {
-      this.dataTable = data.data.records
+      this.dataTable = data.data.list
       this.total = data.data.total
     }
     setTimeout(() => {
@@ -277,7 +277,7 @@ export default class extends Vue {
     for (let i = 0, length = arr.length; i < length; i++) {
       let node = arr[i]
       if (node.id === form.parentId) {
-        form.parentName = node.name
+        form.parentName = node.menuName
       } else {
         if (node.children) {
           this.filterParent(node.children, form)
@@ -293,7 +293,7 @@ export default class extends Vue {
       let node = arr[i]
       const parent = {
         id: item.id,
-        name: item.name,
+        menuName: item.menuName,
         parentId: '',
         sortValue: item.sortValue
       } as any
@@ -321,8 +321,8 @@ export default class extends Vue {
   private async handleStateSubmit() {
     const parent = {
       id: this.dialog.id,
-      isEnable: this.dialog.isEnable,
-      name: this.dialog.name,
+      status: this.dialog.status,
+      menuName: this.dialog.menuName,
       parentId: this.dialog.parentId
     }
     const { data } = await editStatus(parent)
@@ -388,14 +388,14 @@ export default class extends Vue {
     this.storeData(value.id)
     this.dialog.isStatusVisible = true
     this.dialog.id = value.id
-    this.dialog.isEnable = value.isEnable
-    this.dialog.name = value.name
+    this.dialog.status = value.status
+    this.dialog.menuName = value.menuName
     this.dialog.parentId = value.parentId
-    if (!value.isEnable) {
-      this.dialog.msg = `"${value.name}" 将被禁止登录！`
+    if (!value.status) {
+      this.dialog.msg = `"${value.menuName}" 将被禁止登录！`
       this.dialog.title = '确认禁用'
     } else {
-      this.dialog.msg = `"${value.name}" 启用！`
+      this.dialog.msg = `"${value.menuName}" 启用！`
       this.dialog.title = '确认启用'
     }
   }
@@ -405,7 +405,7 @@ export default class extends Vue {
   }
   // 启用，禁用筛选
   filterHandler(value: string) {
-    this.searchData.isEnable = value
+    this.searchData.status = value
   }
   // 启用禁用弹层关闭
   async handleCloseStatus() {
@@ -422,7 +422,7 @@ export default class extends Vue {
     this.dialog.isVisible = true
     this.dialog.type = 'add'
     this.dialog.title = '添加'
-    this.searchData.name = ''
+    this.searchData.menuName = ''
     this.getMenuList()
   }
   // 内容控制字数，多出的用省略号
@@ -447,7 +447,7 @@ export default class extends Vue {
         let item = data[i]
 
         if (item.id === obj.id) {
-          item.isEnable = !item.isEnable
+          item.status = !item.status
         }
         result.push(item)
         if (item.children && item.children.length > 0) {
@@ -512,10 +512,10 @@ export default class extends Vue {
           nodes.highlight = false
         }
         if (node.id === nodes.id) {
-          if (nodes.parentIsEnable === false && node.parentIsEnable === true) {
-            node.parentIsEnable = nodes.parentIsEnable
+          if (nodes.parentStatus === false && node.parentStatus === true) {
+            node.parentStatus = nodes.parentStatus
           }
-          nodes.parentIsEnable = node.parentIsEnable
+          nodes.parentStatus = node.parentStatus
           nodes.open = node.open
           arrRes.push(nodes)
         }
@@ -535,15 +535,15 @@ export default class extends Vue {
     if (child) {
       child.forEach((element:any) => {
         if (where === 'top' || where === 'bottom') {
-          obj.parentIsEnable = null
-          if (obj.isEnable === false) {
-            element.parentIsEnable = false
+          obj.parentStatus = null
+          if (obj.status === false) {
+            element.parentStatus = false
           } else {
-            element.parentIsEnable = obj.isEnable
-            // element.isEnable = obj.isEnable
+            element.parentStatus = obj.status
+            // element.status = obj.status
           }
         } else {
-            element.parentIsEnable = obj.parentIsEnable
+            element.parentStatus = obj.parentStatus
         }
 
         if (element.children) {

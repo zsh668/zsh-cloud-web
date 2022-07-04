@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="dataTable === undefined||dataTable.length===0" class="blankBox">
+    <!-- <div v-if="dataTable === undefined||dataTable.length===0" class="blankBox">
       暂时还没有数据哦～
-    </div>
+    </div> -->
     <!-- <div v-if="listLoading" class="loadBox">
       正在加载中…
     </div> -->

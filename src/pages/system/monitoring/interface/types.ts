@@ -28,5 +28,5 @@ export interface PageListEntity {
   pages?: string
   page?: string
   current?: string
-  records?: TableData[]
+  list?: TableData[]
 }

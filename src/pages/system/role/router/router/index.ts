@@ -3,10 +3,9 @@ export default [
   {
     path: '/role',
     component: Layout,
-    redirect: '/role',
     children: [
       {
-        path: '/role',
+        path: '',
         component: () =>
           import(/* webpackChunkName: "form" */ '@/pages/system/role/index.vue'),
         meta: {

@@ -343,7 +343,7 @@ export default class extends Vue {
   private editData: IUserFreezeRequest = {
     account: '', // 账号
     userName: '', // 姓名
-    password: '123456', // 密码
+    password: '123#456', // 密码
     mobile: '', // 手机
     avatar: '', // 头像
     stationId: '', // 岗位

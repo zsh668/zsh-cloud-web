@@ -6,7 +6,7 @@
           <div slot="title">
             <span>
               <el-checkbox v-model="item.checkbox" :indeterminate="item.isIndeterminate" @change="handleCheckAllChange({ val: item, checked: $event })">
-                {{ item.name }}
+                {{ item.menuName }}
               </el-checkbox>
             </span>
           </div>
@@ -14,7 +14,7 @@
           <div class="children-item">
             <div class="menuList">
               <ul v-if="item.resources.length>0">
-                <li v-for="val in item.resources" :key="val.id"><el-checkbox v-model="val.checkbox" @change="hanleClickBox(val)"><span :title="val.name">{{ ellipsis(val.name, 5) }}</span></el-checkbox></li>
+                <li v-for="val in item.resources" :key="val.id"><el-checkbox v-model="val.checkbox" @change="hanleClickBox(val)"><span :title="val.resourceName">{{ ellipsis(val.resourceName, 5) }}</span></el-checkbox></li>
               </ul>
               <div v-else class="noData">
                 暂时还没有按钮数据哦～
@@ -74,7 +74,7 @@ export default class extends Vue {
   private async getmenList(id:string) {
     const resourceId = this.$store.state.menuData
     const { data } = await getmenuList({ menuId: id })
-    this.roleData = data.data.records.map((obj: any) => ({ ...obj, checkbox: false }))
+    this.roleData = data.data.list.map((obj: any) => ({ ...obj, checkbox: false }))
     // 反选
     if (resourceId.length > 0) {
       resourceId.forEach(async(obj:any) => {

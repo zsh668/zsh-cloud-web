@@ -244,7 +244,7 @@ export default class extends Vue {
     this.listLoading = true
     const { data } = await getOperationList({ ...this.searchData })
     if (data.isSuccess === true) {
-      this.dataTable = data.data.records
+      this.dataTable = data.data.list
       this.total = data.data.total
     }
     setTimeout(() => {

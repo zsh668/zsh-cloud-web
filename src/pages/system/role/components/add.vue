@@ -15,8 +15,11 @@
         class="demo-ruleForm"
         :model="formdata"
       >
-        <el-form-item label="角色名称：" prop="name">
-          <el-input v-model="formdata.name" placeholder="请输入" minlength="1" maxlength="12" />
+        <el-form-item label="角色编码：" prop="roleCode">
+          <el-input v-model="formdata.roleCode" placeholder="请输入" minlength="1" maxlength="12" />
+        </el-form-item>
+        <el-form-item label="角色名称：" prop="roleName">
+          <el-input v-model="formdata.roleName" placeholder="请输入" minlength="1" maxlength="12" />
         </el-form-item>
         <el-form-item label="互斥角色：" prop="repel">
           <el-select
@@ -27,32 +30,20 @@
               v-for="item in roleData"
               :key="item.id"
               :disabled="item.disabled"
-              :label="item.name"
+              :label="item.roleName"
               :value="item.id"
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="projectId==='1'" label="选择应用：" prop="applicationIds">
-          <el-select
-            v-model="formdata.applicationIds"
-            placeholder="请选择"
-            multiple
-            value-key="id"
-          >
-            <el-option
-              v-for="item in dataBase"
-              :key="item.id"
-              :disabled="!item.status"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态：">
-          <el-radio-group v-model="formdata.status">
-            <el-radio :label="true">启用</el-radio>
-            <el-radio :label="false">禁用</el-radio>
-          </el-radio-group>
+        <el-form-item label="描述：" prop="describe" class="textInfo">
+          <el-input
+            v-model="formdata.describe"
+            type="textarea"
+            resize="none"
+            maxlength="50"
+            @input="descInput"
+          />
+          <span class="numInfo">{{ texNum }}/100</span>
         </el-form-item>
         <el-form-item class="right">
           <el-button @click="handleClose"> 取 消 </el-button>
@@ -69,9 +60,9 @@ import { ElForm } from 'element-ui/types/form'
 // interface接口
 import { getApply } from '@/utils/cookies'
 // api
-import { addRole, editRole, getList } from '@/pages/system/role/api'
+import { addRole, editRole } from '@/pages/system/role/api'
 // 表单验证
-import { validateName } from '@/utils/validate'
+import { validateAccounts, validateName } from '@/utils/validate'
 
 @Component({
   name: 'roleAddDialog',
@@ -84,31 +75,29 @@ export default class extends Vue {
   @Prop() private roleData!:any
   private ref = this.$refs as any
   private dataBase =[] as any
+  private texNum: number = 0
   private formdata={
     dsType: {
-      val: 1,
-      code: 'ALL'
+      code: 1,
+      name: 'ALL'
     }
   } as any
-  // 获取应用Id
-  get projectId() {
-    return getApply() ? JSON.parse(getApply() as any).id : ''
-  }
+
   @Watch('data')
   getformdata(val:any) {
-    this.formdata.status = true
     if (this.dialog.type !== 'add') {
       this.formdata = val
     } else {
        this.formdata = {
-         name: '',
+         roleCode: '',
+         roleName: '',
          id: '',
          repel: '',
-         status: true,
          dsType: {
-          val: 1,
-          code: 'ALL'
-        }
+          code: 1,
+          name: 'ALL'
+        },
+         describe: ''
        }
          this.roleData.forEach((item:any) => {
           if (item.status) {
@@ -119,8 +108,8 @@ export default class extends Vue {
   }
 
   private formRules = {
-    name: [{ validator: validateName, required: true, trigger: 'blur' }],
-    applicationIds: [{ required: true, message: '请选择', trigger: 'blur' }]
+    roleCode: [{ validator: validateAccounts, required: true, trigger: 'blur' }],
+    roleName: [{ validator: validateName, required: true, trigger: 'blur' }]
   }
 
   private isDisable:boolean=false
@@ -191,6 +180,10 @@ export default class extends Vue {
   private handleClose() {
     (this.$refs.ruleForm as ElForm).resetFields()
     this.$emit('close')
+  }
+  descInput() {
+    let txtVal = (this.formdata as any).describe.length
+    this.texNum = 0 + txtVal
   }
 }
 </script>

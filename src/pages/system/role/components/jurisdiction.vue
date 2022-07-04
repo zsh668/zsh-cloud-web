@@ -13,7 +13,7 @@
         <checkbox-tree
           ref="checkTreeRef"
           :role-list="menuData"
-          :resource-id-list="menuListData.resourceIdList"
+          :resource-id-list="menuListData.resourceIds"
           @getMenuList="getMenuList"
         />
         <!-- <tree-list v-if="menuData.length>0" ref="checkTreeRef" :list="menuData" :role="menuData" :resource-id="menuListData.resourceIdList" /> -->
@@ -22,7 +22,7 @@
       <el-tab-pane label="数据权限" name="second">
         <tree-data
           :orgdata="orgListData"
-          :active-names="formdata !== null ? formdata.dsType.code : ''"
+          :active-names="formdata !== null ? formdata.dsType.name : ''"
           :tipshow="tipShow"
           @getOrgList="getOrgList"
           @gettype="getdsType"
@@ -66,13 +66,13 @@ export default class extends Vue {
   private tabIndex = '0'
   private keys = ''
   private dsType = {
-    code: 'CUSTOMIZE',
-    val: 4
+    name: 'CUSTOMIZE',
+    code: 4
   } as any
   private menuListData = {
     roleId: '',
-    menuIdList: [],
-    resourceIdList: []
+    menuIds: [],
+    resourceIds: []
   } as any
   private dialog = {
     id: '',
@@ -93,8 +93,8 @@ export default class extends Vue {
   }
   @Watch('allroleid')
   getAllRoleid(val: any) {
-    this.menuListData.menuIdList = val.menuIdList
-    this.menuListData.resourceIdList = val.resourceIdList
+    this.menuListData.menuIds = val.menuIds
+    this.menuListData.resourceIds = val.resourceIds
   }
 
   created() {
@@ -129,13 +129,13 @@ export default class extends Vue {
     this.menuData = await this.flatten(data.data)
 
     if (
-      this.menuListData.menuIdList.length > 0 ||
-      this.menuListData.resourceIdList.length > 0
+      this.menuListData.menuIds.length > 0 ||
+      this.menuListData.resourceIds.length > 0
     ) {
-      this.menuListData.menuIdList.forEach(async(item: any) => {
+      this.menuListData.menuIds.forEach(async(item: any) => {
         this.menuData = await this.filterMenu(this.menuData, item)
       })
-      this.menuListData.resourceIdList.forEach(async(item: any) => {
+      this.menuListData.resourceIds.forEach(async(item: any) => {
         this.menuData = await this.filterMenu(this.menuData, item)
       })
     }
@@ -264,8 +264,8 @@ export default class extends Vue {
     let resourceIdData = this.$store.state.menubtnList
     if (val === '0') {
       const parent = {
-        menuIdList: menuListData,
-        resourceIdList: resourceIdData,
+        menuIds: menuListData,
+        resourceIds: resourceIdData,
         roleId: (this.formdata as any).id
       }
       const { data } = await setRole(parent)
@@ -275,7 +275,7 @@ export default class extends Vue {
         // this.$message.error(data.msg)
       }
     } else {
-      if (this.dsType.val === 4) {
+      if (this.dsType.code === 4) {
         if (this.orgListData && this.orgListData.length === 0) {
           this.tipShow = true
           return false

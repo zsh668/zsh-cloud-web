@@ -25,7 +25,7 @@ export const addUser = (data: any) =>
 // 编辑用户
 export const editUser = (data: any) =>
   request({
-    url: `/system/users/${data.id}`,
+    url: `/system/users`,
     method: 'put',
     data
   })
