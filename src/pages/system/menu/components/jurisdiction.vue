@@ -2,7 +2,7 @@
   <div ref="getHeight" class="app-container">
     <div v-if="$hasPermission('resource:add')" class="operationData menuMar"><el-button type="primary" @click="handleAdd"> 添加权限 </el-button></div>
     <module-tip :data-table="dataTable" :list-loading="listLoading" />
-    <div v-if="dataTable.length>0">
+    <div>
       <el-table
         ref="table"
         :data="dataTable"
@@ -14,7 +14,7 @@
         class=""
       >
         <el-table-column
-          prop="code"
+          prop="resourceCode"
           width="200"
           align="left"
         >
@@ -25,7 +25,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="resourceName"
           width="120"
         >
           <template slot="header">

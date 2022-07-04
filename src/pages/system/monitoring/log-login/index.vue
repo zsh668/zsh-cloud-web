@@ -229,7 +229,7 @@ export default class extends Vue {
     }
     const { data } = await getList(parent)
     if (data.isSuccess === true) {
-      this.dataTable = data.data.records
+      this.dataTable = data.data.list
       this.total = data.data.total
     }
     setTimeout(() => {

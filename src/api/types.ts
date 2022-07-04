@@ -31,5 +31,5 @@ export interface PageListEntity {
   pages?: string
   page?: string
   current?: string
-  records?: MenuTableData[]
+  list?: MenuTableData[]
 }

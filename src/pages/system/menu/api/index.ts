@@ -17,7 +17,7 @@ export const addMenu = (data: any) =>
 // 编辑菜单
 export const editMenu = (data: any) =>
   request({
-    url: `/system/menus/${data.id}`,
+    url: `/system/menus`,
     method: 'put',
     data
   })
@@ -67,34 +67,34 @@ export const move = (data: any) =>
 // 菜单资源
 export const getmenuList = (params: any) =>
   request({
-    url: `/system/resource/page`,
+    url: `/system/resources`,
     method: 'get',
     params
   })
   // 添加菜单
 export const addJurisdiction = (data: any) =>
 request({
-  url: `/system/resource`,
+  url: `/system/resources`,
   method: 'post',
   data
 })
 // 编辑菜单
 export const editJurisdiction = (data: any) =>
 request({
-  url: `/system/resource`,
+  url: `/system/resources`,
   method: 'put',
   data
 })
 // 获取菜单详情
 export const detailJurisdiction = (id: any) =>
 request({
-  url: `/system/resource/${id}`,
+  url: `/system/resources/${id}`,
   method: 'get'
 })
 // 删除菜单
 export const deleteJurisdiction = (params: any) =>
 request({
-  url: `/system/resource`,
+  url: `/system/resources`,
   method: 'delete',
   params
 })

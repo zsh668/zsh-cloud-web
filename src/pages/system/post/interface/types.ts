@@ -14,7 +14,7 @@ export interface IPostTableData {
 export interface IPostTable {
     current?: number
     pages?: number
-    records?: IPostTableData[]
+    list?: IPostTableData[]
     searchCount?: boolean
     size?: number
     total?: number

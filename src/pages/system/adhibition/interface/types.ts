@@ -13,7 +13,7 @@ export interface ITableData {
 export interface IPostTable {
     current?: number
     pages?: number
-    records?: ITableData[]
+    list?: ITableData[]
     searchCount?: boolean
     size?: number
     total?: number

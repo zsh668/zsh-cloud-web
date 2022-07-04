@@ -8,9 +8,20 @@
           <el-form ref="ruleForm" :inline="true" :model="searchData">
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="name" label="角色名称：">
+                <el-form-item prop="roleCode" label="角色编码：">
                   <el-input
-                    v-model="searchData.name"
+                    v-model="searchData.roleCode"
+                    placeholder="请输入"
+                    suffix-icon="el-icon-search"
+                    style="width: 160px;"
+                    clearable
+                    @click.native="handleSearch"
+                    @keypress.native.enter="handleSearch"
+                  />
+                </el-form-item>
+                <el-form-item prop="roleName" label="角色名称：">
+                  <el-input
+                    v-model="searchData.roleName"
                     placeholder="请输入"
                     suffix-icon="el-icon-search"
                     style="width: 160px;"
@@ -25,7 +36,7 @@
           </el-form>
         </div>
         <module-tip :data-table="dataTable" :list-loading="listLoading" />
-        <div v-if="dataTable.length> 0" id="resultScroll" class="roleMain">
+        <div id="resultScroll" class="roleMain">
           <el-table
             ref="table"
             :data="dataTable"
@@ -36,10 +47,18 @@
           >
             <el-table-column align="left">
               <template slot="header">
+                <span> 角色编码 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <span>{{ ellipsis(row.roleCode, 6) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="left">
+              <template slot="header">
                 <span> 角色名称 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ ellipsis(row.name, 6) }}</span>
+                <span>{{ ellipsis(row.roleName, 6) }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -47,6 +66,9 @@
               width="120"
               align="center"
             >
+              <template slot="header">
+                <span> 状态 </span>
+              </template>
               <template slot-scope="{ row,$index }">
                 <div @click.stop>
                   <el-switch v-model="row.status" :disabled="!$hasPermission('role:update')" @change="handleState(row,$index)" />
@@ -119,7 +141,7 @@ import JurisdictionDialog from './components/jurisdiction.vue'
 import { RoleTableData } from '@/pages/system/role/interface/types'
 // api
 // import { getRole, getAllTree } from '@/api/api'
-import { getDataList, deleteRole, editRole, getRoleIdList, detailRole, userRole } from '@/pages/system/role/api'
+import { getDataList, deleteRole, editRole, getRoleIdList, detailRole, disableRole } from '@/pages/system/role/api'
 import { hasPermission } from '../../../utils'
 @Component({
   name: 'RoleList',
@@ -142,18 +164,18 @@ export default class extends Vue {
   private allRoleId=[]
   private userData = {} as any
   private formData: RoleTableData ={
-    status: true,
-    name: '',
+    roleCode: '',
+    roleName: '',
     repel: '',
     applicationIds: [],
     dsType: {
-      val: 1,
-      code: 'ALL'
+      code: 1,
+      name: 'ALL'
     }
   } as any
   private searchData = {
     id: '',
-    name: ''
+    roleName: ''
   }
   private dialog = {
     id: '',
@@ -232,7 +254,7 @@ export default class extends Vue {
   private async getAllRoleId(id:string) {
     const { data } = await getRoleIdList(id)
     this.allRoleId = data.data
-    this.$store.commit('updatedMenuData', data.data.resourceIdList)
+    this.$store.commit('updatedMenuData', data.data.resourceIds)
   }
   // 搜索
   private handleSearch() {
@@ -240,10 +262,7 @@ export default class extends Vue {
   }
   // 启用、禁用确认
   private async handleStateSubmit() {
-    this.userData.applicationIds = this.formData.applicationIds
-    delete (this.userData as any).createTime
-    delete (this.userData as any).updateTime
-    const { data } = await editRole(this.userData)
+    const { data } = await disableRole(this.dialog.id)
     if (data.isSuccess) {
       this.dialog.isStatusVisible = false
       this.$message.success('操作成功！')
@@ -298,21 +317,15 @@ export default class extends Vue {
   private async handleState(value: any, index:any) {
     this.newData = value
     this.newIndex = index
-    this.getEdit(value.id)
-    const { data } = await userRole(value.id)
-    if (data.isSuccess) {
-      this.dialog.isStatusVisible = true
-      if (data.data.userList.length > 0) {
-        this.dialog.msg = `"${value.name}" 有用户在使用，确定要禁用么？`
-      } else {
-      this.dialog.msg = `"${value.name}" 角色权限将被禁用！`
-    }
-    }
     this.userData = value
+    this.dialog.isStatusVisible = true
+    this.dialog.id = value.id
+    this.dialog.status = value.status
     if (!value.status) {
+      this.dialog.msg = `"${value.roleName}" 将被禁用！`
       this.dialog.title = '确认禁用'
     } else {
-      this.dialog.msg = `"${value.name}" 启用！`
+      this.dialog.msg = `"${value.roleName}" 启用！`
       this.dialog.title = '确认启用'
     }
   }
@@ -338,11 +351,11 @@ export default class extends Vue {
     this.formData = {
       status: true,
       dsType: {
-        val: 1,
-        code: 'ALL'
+        code: 1,
+        name: 'ALL'
       }
     }
-    this.searchData.name = ''
+    this.searchData.roleName = ''
     this.getList()
   }
   // 内容控制字数，多出的用省略号

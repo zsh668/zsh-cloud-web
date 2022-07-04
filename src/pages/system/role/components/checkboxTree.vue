@@ -18,7 +18,7 @@
                     handleCheckAllChange({ val: treeData, checked: $event })
                   "
                 >
-                  {{ treeData.name }}
+                  {{ treeData.menuName }}
                 </el-checkbox>
               </span>
             </div>
@@ -57,7 +57,7 @@
                             :label="childrenData.id"
                             @change="handleCheck($event, childrenData.id)"
                           >
-                            {{ childrenData.name }}
+                            {{ childrenData.resourceName }}
                           </el-checkbox>
                         </el-checkbox-group>
                       </li>
@@ -69,7 +69,7 @@
               <template>
                 <checkbox-tree
                   :role-list="treeData.children"
-                  :resource-id-list="resourceIdList"
+                  :resource-id-list="resourceIds"
                 />
               </template>
             </div>
@@ -128,7 +128,7 @@ export default {
       type: Array,
       default: () => []
     },
-    resourceIdList: {
+    resourceIds: {
       type: Array,
       default: () => []
     }
@@ -151,7 +151,7 @@ export default {
   created() {
     // 将回调延迟到下次 DOM 更新循环之后执行按钮默认选中
     this.$nextTick(() => {
-      this.checkedCities = this.resourceIdList
+      this.checkedCities = this.resourceIds
       this.$store.commit('updatedAllbtnMenuList', this.checkedCities)
     })
   },

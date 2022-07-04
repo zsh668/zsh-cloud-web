@@ -50,7 +50,7 @@ export default class extends Vue {
   private orgList = []
   private defaultProps = {
     children: 'children',
-    name: 'name',
+    name: 'orgName',
     id: 'id'
   }
   @Watch('activeNames', { immediate: true })
@@ -84,8 +84,8 @@ export default class extends Vue {
   }
   handleClick(item: any) {
     const parent = {
-      code: item.name,
-      val: Number(item.index) + 1
+      name: item.name,
+      code: Number(item.index) + 1
     }
     this.$emit('gettype', parent)
   }
