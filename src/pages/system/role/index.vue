@@ -8,17 +8,6 @@
           <el-form ref="ruleForm" :inline="true" :model="searchData">
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="roleCode" label="角色编码：">
-                  <el-input
-                    v-model="searchData.roleCode"
-                    placeholder="请输入"
-                    suffix-icon="el-icon-search"
-                    style="width: 160px;"
-                    clearable
-                    @click.native="handleSearch"
-                    @keypress.native.enter="handleSearch"
-                  />
-                </el-form-item>
                 <el-form-item prop="roleName" label="角色名称：">
                   <el-input
                     v-model="searchData.roleName"

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { disablePost } from '@/pages/system/post/api'
 
 // 用户组管理
 export const getUserGroupList = (params: any) =>
@@ -21,6 +22,12 @@ export const editUserGroup = (data: any) =>
     method: 'put',
     data
   })
+// 禁用用户组
+export const disableUserGroup = (id: any) =>
+  request({
+    url: `/system/userGroups/disable/${id}`,
+    method: 'put'
+  })
 // 获取用户组详情
 export const detailUserGroup = (id: any) =>
   request({
@@ -34,4 +41,3 @@ export const delUserGroup = (params: any) =>
     method: 'delete',
     params
   })
-

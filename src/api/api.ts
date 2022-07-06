@@ -44,12 +44,6 @@ export const getRepelRole = (params: any) =>
     params
   })
 // 组织
-// export const getAllTree = (data: any) =>
-//   request({
-//     url: `/authority/org/tree`,
-//     method: 'get',
-//     data
-//   })
 export const getAllTree = (params: any) =>
   request({
     url: `/system/orgs/tree`,

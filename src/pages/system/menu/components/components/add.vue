@@ -14,12 +14,12 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="编码：" prop="code">
-          <el-input v-model="userData.code" placeholder="请输入" autocomplete="off" minlength="1" maxlength="30" />
+        <el-form-item label="编码：" prop="resourceCode">
+          <el-input v-model="userData.resourceCode" placeholder="请输入" autocomplete="off" minlength="1" maxlength="30" />
           <p class="codeTip">建议使用:作为分隔符，并以view、add、update、delete、export、import、download、upload等关键词结尾，如：menu:add、 resource:view、 file:upload</p>
         </el-form-item>
-        <el-form-item label="名称：" prop="name">
-          <el-input v-model="userData.name" placeholder="请输入" autocomplete="off" minlength="1" maxlength="7" />
+        <el-form-item label="名称：" prop="resourceName">
+          <el-input v-model="userData.resourceName" placeholder="请输入" autocomplete="off" minlength="1" maxlength="7" />
         </el-form-item>
         <el-form-item label="请求方式：" prop="method">
           <el-input v-model="userData.method" placeholder="请输入" autocomplete="off" minlength="1" maxlength="10" />
@@ -56,16 +56,16 @@ export default class extends Vue {
   private el: any = this.$refs
   private isDisable =false
   private userData={
-    code: '',
-    name: '',
+    resourceCode: '',
+    resourceName: '',
     method: '',
     url: '',
     menuId: ''
 
   } as any
   private formRules = {
-    code: [{ required: true, message: '请输入编码', trigger: 'blur' }],
-    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    resourceCode: [{ required: true, message: '请输入编码', trigger: 'blur' }],
+    resourceName: [{ required: true, message: '请输入名称', trigger: 'blur' }],
     method: [{ required: true, message: '请输入请求方式', trigger: 'blur' }],
     url: [{ required: true, message: '请输入地址', trigger: 'blur' }]
   }

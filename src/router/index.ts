@@ -7,7 +7,7 @@ import ModuleMenu from '@/pages/system/menu/router'
 import ModuleOrganization from '@/pages/system/organization/router'
 import ModulePost from '@/pages/system/post/router'
 import ModuleRole from '@/pages/system/role/router'
-import ModuleMonitoring from '@/pages/system/monitoring'
+import ModuleMonitoring from '@/pages/monitoring'
 Vue.use(Router)
 
 export const constantRoutes: RouteConfig[] = [
@@ -104,7 +104,7 @@ export const asyncRoutes: RouteConfig[] = [
         path: 'log-login',
         component: () =>
           import(
-            /* webpackChunkName: "form" */ '@/pages/system/monitoring/log-login/index.vue'
+            /* webpackChunkName: "form" */ '@/pages/monitoring/log-login/index.vue'
           ),
         meta: {
           title: '登录日志',
@@ -115,7 +115,7 @@ export const asyncRoutes: RouteConfig[] = [
         path: 'log-operation',
         component: () =>
           import(
-            /* webpackChunkName: "form" */ '@/pages/system/monitoring/log-operation/index.vue'
+            /* webpackChunkName: "form" */ '@/pages/monitoring/log-operation/index.vue'
           ),
         meta: {
           title: '操作日志',

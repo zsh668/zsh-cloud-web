@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="dialog.isDeleVisible" :show-close="false" class="deleteBox">
-    <div>确认删除“{{ deleData.name }}”？</div>
+    <div>确认删除“{{ deleData.orgName }}”？</div>
     <div class="subBox">
       <el-button @click="handleClose"> 取 消 </el-button>
       <el-button type="primary" @click="handleSubmit"> 确 定 </el-button>

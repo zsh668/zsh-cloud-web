@@ -13,7 +13,7 @@ export default [
         path: 'loginLog',
         component: () =>
           import(
-            /* webpackChunkName: "form" */ '@/pages/system/monitoring/log-login/index.vue'
+            /* webpackChunkName: "form" */ '@/pages/monitoring/log-login/index.vue'
           ),
         meta: {
           title: '登录日志'
@@ -24,7 +24,7 @@ export default [
         path: 'operation',
         component: () =>
           import(
-            /* webpackChunkName: "form" */ '@/pages/system/monitoring/log-operation/index.vue'
+            /* webpackChunkName: "form" */ '@/pages/monitoring/log-operation/index.vue'
           ),
         meta: {
           title: '操作日志'

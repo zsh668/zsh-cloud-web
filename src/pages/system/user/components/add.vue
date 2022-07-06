@@ -97,9 +97,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="性别：" class="boxPt">
-            <el-radio-group v-model="userData.sex.code">
-              <el-radio label="M">男</el-radio>
-              <el-radio label="W">女</el-radio>
+            <el-radio-group v-model="userData.sex">
+              <el-radio label="1">男</el-radio>
+              <el-radio label="2">女</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="状态：" class="boxPt">
@@ -189,7 +189,7 @@ export default class extends Vue {
       { validator: validateAccounts, required: true, trigger: 'blur' }
     ],
     mobile: [{ validator: validatePhone, required: true, trigger: 'blur' }],
-    name: [{ validator: validateName, required: true, trigger: 'blur' }],
+    userName: [{ validator: validateName, required: true, trigger: 'blur' }],
     orgId: [{ required: true, message: '请选择组织', trigger: 'change' }],
     // superior: [{ required: true, message: '请选择上级领导', trigger: 'change' }],
     stationId: [{ required: true, message: '请选择岗位', trigger: 'change' }]
@@ -210,7 +210,7 @@ export default class extends Vue {
     data: [],
     props: {
       children: 'children',
-      label: 'name',
+      label: 'orgName',
       disabled: 'disabled',
       value: 'id'
     }
@@ -379,7 +379,7 @@ export default class extends Vue {
     })
   }
   clearData() {
-    (this.userData as any).sex.code = 'M'
+    (this.userData as any).sex = 1
     ;(this.userData as any).status = true
     ;(this.userData as any).avatar = ''
     ;(this.userData as any).password = '123456'

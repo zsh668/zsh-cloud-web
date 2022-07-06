@@ -49,11 +49,11 @@ export const detailUser = (id: any) =>
     method: 'get'
   })
 // 删除用户
-export const delUser = (params: any) =>
+export const delUser = (data: any) =>
   request({
     url: `/system/users`,
     method: 'delete',
-    params
+    data
   })
 // 重置密码
 export const resetUser = (params: any) =>
