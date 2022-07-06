@@ -200,12 +200,12 @@ import { optTypeOptions, TypeOptions } from '@/utils/common-selete'
 // interface接口
 import {
   TableData
-} from '@/pages/system/monitoring/interface/types'
+} from '@/pages/monitoring/interface/types'
 // 组件
 import Pagination from '@/components/Pagination/index.vue'
 import ModuleTip from '@/components/ModuleTip/index.vue'
 // api
-import { getOperationList } from '@/pages/system/monitoring/api'
+import { getOperationList } from '@/pages/monitoring/api'
 @Component({
   name: 'loginList',
   components: {

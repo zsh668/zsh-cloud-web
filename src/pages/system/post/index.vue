@@ -10,7 +10,7 @@
                 <el-col :span="6">
                   <el-form-item label="岗位名称：">
                     <el-input
-                      v-model="searchData.name"
+                      v-model="searchData.stationName"
                       placeholder="请输入"
                       clearable
                       @clear="resetSearch"
@@ -50,7 +50,15 @@
                 <span> | 岗位名称 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ row.name }}</span>
+                <span>{{ row.stationName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center">
+              <template slot="header">
+                <span> | 组织 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <span>{{ row.orgName }}</span>
               </template>
             </el-table-column>
             <el-table-column align="center">
@@ -79,7 +87,7 @@
                 </span>
               </template>
               <template slot-scope="{ row,$index }">
-                <el-switch v-model="row.status" :disabled="!$hasPermission('station:update')" @change="handleState(row,$index)" />
+                <el-switch v-model="row.status" :disabled="!$hasPermission('station:disable')" @change="handleState(row,$index)" />
               </template>
             </el-table-column>
             <el-table-column align="center">
@@ -109,8 +117,12 @@
           v-if="dialog.isVisible"
           ref="userDialog"
           :dialog="dialog"
-          :base-data="baseData"
+          :org-data="optionData"
+          :tree-data="treeData"
+          :get-value="getValue"
+          :edit-data="baseData"
           @close="handleClose"
+          @cleardata="clearData"
           @getList="getList"
         />
         <!-- end -->
@@ -148,7 +160,8 @@ import BaseDialog from '@/components/BaseStatus/index.vue'
 // 添加
 import AddDialog from './components/add.vue'
 // api
-import { getPostList, deletePost, editPost, detailPost } from '@/pages/system/post/api'
+import { getPostList, deletePost, disablePost, detailPost } from '@/pages/system/post/api'
+import { getAllTree } from '@/api/api'
 @Component({
   name: 'PostList',
   components: {
@@ -161,28 +174,35 @@ import { getPostList, deletePost, editPost, detailPost } from '@/pages/system/po
 })
 export default class extends Vue {
   private dataTable:IPostTableData[]= []
+  private orgData = []
   private total=0
   private listLoading = true
   private deleteId = ''
   private ref: any = this.$refs
   private filterStatus=true
+  private treeData = {
+    treeShow: false,
+    valueId: '' // 初始ID（可选）
+  }
   private searchData = {
-    name: '',
+    stationName: '',
     size: 10,
     current: 1
   } as any
   private dialog = {
     id: '',
-    status: false,
+    stationName: '',
     title: '',
     msg: '',
     isVisible: false,
     isDeleVisible: false,
-    isStatusVisible: false
+    isStatusVisible: false,
+    status: false
   } as any
   private baseData= {
-    name: '',
-    status: true,
+    stationName: '',
+    orgId: '',
+    orderNum: '',
     describe: ''
   } as any
   private newIndex=0
@@ -190,8 +210,21 @@ export default class extends Vue {
   /// 生命周期
   created() {
     this.getList()
+    this.getOrg()
   }
   /// // 功能函数 /////
+  get optionData() {
+    let cloneData = JSON.parse(JSON.stringify(this.orgData)) // 对源数据深度克隆
+    return cloneData.filter((father: any) => {
+      // 循环所有项，并添加children属性
+      let branchArr = cloneData.filter(
+        (child: any) => father.id === child.parentId
+      ) // 返回每一项的子级数组
+      // eslint-disable-next-line no-unused-expressions
+      branchArr.length > 0 ? (father.children = branchArr) : '' // 给父级添加一个children属性，并赋值
+      return father.parentId === '0' // 返回第一层
+    })
+  }
   // 获取数据
   private async getList() {
     this.listLoading = true
@@ -204,13 +237,42 @@ export default class extends Vue {
       this.listLoading = false
     }, 0.1)
   }
+  // 获取组织列表
+  private async getOrg() {
+    const { data } = await getAllTree({ status: true })
+    if (data.isSuccess === true) {
+      this.orgData = await this.filterMenuData(data.data)
+      if (data.data.length > 0) {
+        this.treeData.valueId = data.data[0].id
+      }
+
+      this.treeData.treeShow = true // 解决异步数据子组件获取不到值的问题
+    }
+  }
+  // 递归 设置禁用的组织
+  async filterMenuData(data:any) {
+    let result = [] as any
+    for (let i = 0; i < data.length; i++) {
+      let item = data[i]
+      item.disabled = !item.status
+      if (!item.status && item.children === null) {
+        item.disabled = true
+      }
+
+      result.push(item)
+      if (item.children && item.children.length > 0) {
+        this.filterMenuData(item.children)
+      }
+    }
+    return result
+  }
+  // 获取组织树id
+  getValue(value: any) {
+    this.treeData.valueId = value
+  }
   // 启用、禁用确认
   private async handleStateSubmit() {
-    const parent = {
-      id: this.dialog.id,
-      status: this.dialog.status
-    }
-    const { data } = await editPost(parent)
+    const { data } = await disablePost(this.dialog.id)
     if (data.isSuccess) {
       this.dialog.isStatusVisible = false
       this.$message.success('操作成功')
@@ -232,10 +294,10 @@ export default class extends Vue {
     this.dialog.id = value.id
     this.dialog.status = value.status
     if (!value.status) {
-      this.dialog.msg = `"${value.name}" 岗位禁用后不可使用！`
+      this.dialog.msg = `"${value.stationName}" 岗位禁用后不可使用！`
       this.dialog.title = '确认禁用'
     } else {
-      this.dialog.msg = `"${value.name}" 岗位启用！`
+      this.dialog.msg = `"${value.stationName}" 岗位启用！`
       this.dialog.title = '确认启用'
     }
   }
@@ -245,7 +307,7 @@ export default class extends Vue {
     const { data } = await deletePost({ ids: ids })
     if (data.isSuccess === true) {
       if (data.data.length > 0) {
-        this.$message.error(`"${this.dialog.name}"` + '岗位正在被使用，不可删除！')
+        this.$message.error(`"${this.dialog.stationName}"` + '岗位正在被使用，不可删除！')
       } else {
         this.$message.success('操作成功')
       }
@@ -258,7 +320,7 @@ export default class extends Vue {
   // 删除
   private handleDelete(row: any) {
     this.dialog.id = row.id
-    this.dialog.name = row.name
+    this.dialog.stationName = row.stationName
     this.dialog.isDeleVisible = true
   }
   // // 获取详情
@@ -301,6 +363,9 @@ export default class extends Vue {
   handleClose() {
     this.dialog.isVisible = false
   }
+  clearData() {
+    this.baseData = {}
+  }
   handleCloseDelete() {
     this.dialog.isDeleVisible = false
   }
@@ -320,9 +385,7 @@ export default class extends Vue {
   handleAdd() {
     this.dialog.isVisible = true
     this.dialog.title = '添加'
-    this.baseData = {
-      status: true
-    }
+    this.baseData = {}
   }
   // 内容控制字数，多出的用省略号
   ellipsis(value: any, num: any) {

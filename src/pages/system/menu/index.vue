@@ -62,8 +62,8 @@
               </template>
               <template slot-scope="{ row }">
                 <div @click.stop>
-                  <el-switch v-if="row.parentStatus===false&&row.status===true" v-model="row.status" :disabled="!$hasPermission('menu:update')" @change="handleState(row)" />
-                  <el-switch v-else v-model="row.status" :disabled="!$hasPermission('menu:update') || row.parentStatus===false" @change="handleState(row)" />
+                  <el-switch v-if="row.parentStatus===false&&row.status===true" v-model="row.status" :disabled="!$hasPermission('menu:disable')" @change="handleState(row)" />
+                  <el-switch v-else v-model="row.status" :disabled="!$hasPermission('menu:disable') || row.parentStatus===false" @change="handleState(row)" />
                 </div>
               </template>
             </el-table-column>
@@ -182,7 +182,6 @@ export default class extends Vue {
     path: '', // 路由
     parentId: '', // 上级类目
     icon: '', // 图标
-    status: true, // 状态
     sortValue: '' // 排序
   } as any
   private searchData = {
@@ -319,13 +318,7 @@ export default class extends Vue {
   }
   // 启用、禁用确认
   private async handleStateSubmit() {
-    const parent = {
-      id: this.dialog.id,
-      status: this.dialog.status,
-      menuName: this.dialog.menuName,
-      parentId: this.dialog.parentId
-    }
-    const { data } = await editStatus(parent)
+    const { data } = await editStatus(this.dialog.id)
     if (data.isSuccess) {
       this.dialog.isStatusVisible = false
       this.$message.success('操作成功')
@@ -392,7 +385,7 @@ export default class extends Vue {
     this.dialog.menuName = value.menuName
     this.dialog.parentId = value.parentId
     if (!value.status) {
-      this.dialog.msg = `"${value.menuName}" 将被禁止登录！`
+      this.dialog.msg = `"${value.menuName}" 将被禁止！`
       this.dialog.title = '确认禁用'
     } else {
       this.dialog.msg = `"${value.menuName}" 启用！`

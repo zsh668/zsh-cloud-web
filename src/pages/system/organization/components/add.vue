@@ -15,38 +15,23 @@
         class="demo-ruleForm"
       >
         <el-form-item label="上级组织：" prop="parentId">
-          <select-tree
-            :props="props"
-            :options="optionData"
-            :parentname="parentname"
-            :parentid="parentid"
-            :editdata="editdata"
-            :clearable="isClearable"
-            :accordion="isAccordion"
-            @get-value="getValue($event)"
-          />
+          <el-input v-model="userData.parentName" readonly />
         </el-form-item>
-        <el-form-item label="组织名称：" prop="name">
-          <el-input v-model="userData.name" placeholder="请输入" autocomplete="off" minlength="1" maxlength="30" />
-        </el-form-item>
-        <el-form-item label="组织负责人：" prop="managerId">
-          <el-select v-model="userData.managerId" placeholder="请选择">
-            <el-option
-              v-for="item in superiorData"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态：">
-          <el-radio-group v-model="userData.status">
-            <el-radio :label="true">正常</el-radio>
-            <el-radio :label="false">停用</el-radio>
-          </el-radio-group>
+        <el-form-item label="组织名称：" prop="orgName">
+          <el-input v-model="userData.orgName" placeholder="请输入" autocomplete="off" minlength="1" maxlength="30" />
         </el-form-item>
         <el-form-item label="排序：" prop="sortValue">
           <el-input-number v-model="userData.sortValue" :min="0" />
+        </el-form-item>
+        <el-form-item label="描述：" prop="describe" class="textInfo">
+          <el-input
+            v-model="userData.describe"
+            type="textarea"
+            resize="none"
+            maxlength="50"
+            @input="descInput"
+          />
+          <span class="numInfo">{{ texNum }}/100</span>
         </el-form-item>
         <el-form-item class="right">
           <el-button @click="handleClose"> 取 消 </el-button>
@@ -62,11 +47,8 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { ElForm } from 'element-ui/types/form'
-import { getUser } from '@/utils/cookies'
 // api
-import { getAllStation } from '@/api/api'
 import { addUser, edit } from '@/pages/system/organization/api'
-import { getUserList } from '@/pages/system/user/api'
 
 // 公用组件
 // 组织树
@@ -89,12 +71,13 @@ export default class extends Vue {
   private styles = {
     width: '300px'
   }
+  private texNum: number = 0
   private userData={
     parentId: '',
-    name: '',
-    status: true,
-    sortValue: '0'
-
+    parentName: '',
+    orgName: '',
+    sortValue: '0',
+    describe: ''
   } as any
   private isClearable=true // 可清空（可选）
   private isAccordion=true // 可收起（可选）
@@ -106,14 +89,13 @@ export default class extends Vue {
   private parentName =''
   private props={ // 配置项（必选）
         value: 'id',
-        label: 'name',
+        label: 'orgName',
         children: 'children'
         // disabled: true
       }
   private superiorData = [] // 组织负责人列表
   private formRules = {
-    parentId: [{ required: true, message: '请选择上级组织', trigger: 'change' }],
-    name: [{ required: true, message: '请输入组织名称', trigger: 'blur' }]
+    orgName: [{ required: true, message: '请输入组织名称', trigger: 'blur' }]
   }
   get optionData() {
       let cloneData = JSON.parse(JSON.stringify(this.orgdata)) // 对源数据深度克隆
@@ -128,24 +110,20 @@ export default class extends Vue {
     getUserData(val:any) {
       if (this.dialog.type !== 'add' && val.id !== undefined) {
         this.userData = val
+        this.userData.parentName = (val.parentName === null || val.parentName === '') ? '顶级组织' : val.parentName
       }
     }
     @Watch('parentid')
     getParentId(val:string) {
       this.userData.parentId = val
     }
+    @Watch('parentname')
+    getParentName(val:string) {
+      this.userData.parentName = val
+    }
   created() {
-    this.getSuperiorData()
   }
   // 功能函数
-  // 获取用户列表
-  private async getSuperiorData() {
-    const params = {
-      status: true
-    }
-    const { data } = await getUserList({ })
-    this.superiorData = data.data
-  }
   // 添加用户
   private async addSave() {
     const { data } = await addUser(this.userData)
@@ -208,6 +186,10 @@ export default class extends Vue {
     (this.$refs.ruleForm as ElForm).resetFields()
     this.$emit('cleardata')
     this.$emit('close')
+  }
+  descInput() {
+    let txtVal = (this.userData as any).describe.length
+    this.texNum = 0 + txtVal
   }
 }
 </script>

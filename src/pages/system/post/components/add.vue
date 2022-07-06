@@ -14,14 +14,24 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="岗位名称：" prop="name">
-          <el-input v-model="baseData.name" placeholder="请输入" autocomplete="off" minlength="1" maxlength="12" />
+        <el-form-item label="岗位名称：" prop="stationName">
+          <el-input v-model="baseData.stationName" placeholder="请输入" autocomplete="off" minlength="1" maxlength="12" />
         </el-form-item>
-        <el-form-item label="状态：">
-          <el-radio-group v-model="baseData.status">
-            <el-radio :label="true">正常</el-radio>
-            <el-radio :label="false">停用</el-radio>
-          </el-radio-group>
+        <el-form-item label="组织：" prop="orgId">
+          <select-tree
+            ref="treeSelect"
+            v-model="values"
+            popover-class="fas"
+            :styles="styles"
+            :select-params="selectParams"
+            :tree-params="treeParams"
+            :org-data="orgData"
+            :org-id="baseData.orgId"
+            @getValue="getValue($event)"
+          />
+        </el-form-item>
+        <el-form-item label="排序：" prop="sortValue">
+          <el-input-number v-model="baseData.sortValue" :min="0" />
         </el-form-item>
         <el-form-item label="描述：" prop="describe" class="textInfo">
           <el-input
@@ -49,23 +59,62 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { ElForm } from 'element-ui/types/form'
+import SelectTree from '@/components/SelectTree/index.vue'
 // api
 import { addPost, editPost, detailPost } from '@/pages/system/post/api'
 
 @Component({
   name: 'Dialog',
   components: {
+    SelectTree
   }
 })
 export default class extends Vue {
   @Prop() private dialog!: any
-  @Prop() private baseData!:any
+  @Prop() private editData!: {}
+  @Prop() private orgData!: []
+  @Prop() private treeData!: {}
+  private baseData= {
+    stationName: '',
+    orgId: '',
+    sortValue: '0',
+    describe: ''
+  } as any
   private texNum: number = 0
   private isDisable: boolean = false
   private el: any = this.$refs
-  // private userData = { ...this.baseData }
   private formRules = {
-    name: [{ required: true, message: '请输入岗位名称', trigger: 'blur' }]
+    stationName: [{ required: true, message: '请输入岗位名称', trigger: 'blur' }],
+    orgId: [{ required: true, message: '请选择组织', trigger: 'change' }]
+  }
+  private values = ''
+  private styles = {
+    width: '300px'
+  }
+  private selectParams = {
+    clearable: true,
+    placeholder: '请选择'
+  }
+  private treeParams = {
+    clickParent: false,
+    filterable: true,
+    data: [],
+    props: {
+      children: 'children',
+      label: 'orgName',
+      disabled: 'disabled',
+      value: 'id'
+    }
+  }
+  @Watch('editData')
+  getUserData(val:any) {
+    if (this.dialog.type !== 'add' && val.id !== undefined) {
+      this.baseData = val
+    }
+  }
+  @Watch('orgData', { immediate: true })
+  getOrg(value: any) {
+    this.treeParams.data = value
   }
   // 功能函数
   // 添加用户
@@ -118,6 +167,10 @@ export default class extends Vue {
   private handleClose() {
     (this.$refs.ruleForm as ElForm).resetFields()
     this.$emit('close')
+  }
+  // 获取组织树id
+  getValue(value: string) {
+    (this.baseData as any).orgId = value
   }
   descInput() {
     let txtVal = (this.baseData as any).describe.length

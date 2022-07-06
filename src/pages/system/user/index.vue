@@ -153,7 +153,8 @@
               </template>
               <template slot-scope="{ row,$index }">
                 <el-switch v-model="row.status" :disabled="!$hasPermission('user:disable')"
-                           @change="handleState(row,$index)" />
+                           @change="handleState(row,$index)"
+                />
               </template>
             </el-table-column>
             <el-table-column align="center" width="160">
@@ -360,7 +361,7 @@ export default class extends Vue {
     data: [],
     props: {
       children: 'children',
-      label: 'name',
+      label: 'orgName',
       disabled: 'disabled',
       value: 'id'
     }

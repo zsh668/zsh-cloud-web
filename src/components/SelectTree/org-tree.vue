@@ -22,7 +22,7 @@
           @node-click="handleNodeClick"
         >
           <span slot-scope="{ node, data }" class="custom-tree-node">
-            <span :class="{'checkboxText': data.isEnable === false||data.status === false}">
+            <span :class="{'checkboxText': data.status === false}">
               {{ node.label }}
             </span>
           </span>
@@ -107,7 +107,7 @@ export default class extends Vue {
   getOption(val:Array<string>) {
     // val.splice(val.findIndex((obj:any) => (obj.status === false)), 1)
     const obj = {
-      name: '顶级组织',
+      menuName: '顶级菜单',
       id: '0',
       parentId: '0',
       children: []
@@ -131,22 +131,22 @@ export default class extends Vue {
     handleNodeClick(node:any) {
       if (node.level === undefined || node.level < 4) {
         if (node.id !== '') {
-        let scrollWrap = document.querySelectorAll('.el-select-dropdown.el-popper')[0];
-        (scrollWrap as any).style.cssText = 'display:none;'
-      }
-      const props = this.props as any
-      if ((node.isEnable || node.isEnable === undefined) && (node.status || node.status === undefined)) {
-      this.valueTitle = node[props.label]
-      this.valueId = node[props.value]
-      this.$emit('get-value', this.valueId)
-      this.visible = false
-      this.defaultExpandedKey = []
-      }
+          let scrollWrap = document.querySelectorAll('.el-select-dropdown.el-popper')[0];
+          (scrollWrap as any).style.cssText = 'display:none;'
+        }
+        const props = this.props as any
+        if (node.status || node.status === undefined) {
+          this.valueTitle = node[props.label]
+          this.valueId = node[props.value]
+          this.$emit('get-value', this.valueId)
+          this.visible = false
+          this.defaultExpandedKey = []
+        }
       } else {
         this.$message({
-        message: '最多添加四级菜单！',
-        type: 'error'
-      })
+          message: '最多添加四级菜单！',
+          type: 'error'
+        })
       }
     }
   // 清除选中

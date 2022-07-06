@@ -107,9 +107,7 @@
               </span>
             </template>
             <template slot-scope="{ row,$index }">
-              <el-switch v-model="row.status" :disabled="!$hasPermission('userGroup:disable')"
-                         @change="handleState(row,$index)"
-              />
+              <el-switch v-model="row.status" :disabled="!$hasPermission('userGroup:disable')" @change="handleState(row,$index)" />
             </template>
           </el-table-column>
           <el-table-column align="center">
@@ -214,8 +212,8 @@ import { IManageUserPageListEntity, IUserFreezeRequest } from '@/pages/system/us
 import {
   getUserGroupList,
   delUserGroup,
-  editUserGroup,
-  detailUserGroup
+  detailUserGroup,
+  disableUserGroup
 } from '@/pages/system/user-group/api'
 import { getRepelRole, getTree } from '@/api/api'
 // import { getRole, getTree } from '@/api/api'
@@ -321,11 +319,7 @@ export default class extends Vue {
 
   // 启用、禁用确认
   private async handleStateSubmit() {
-    const parent = {
-      id: this.dialog.id,
-      status: this.dialog.status
-    }
-    const { data } = await editUserGroup(parent)
+    const { data } = await disableUserGroup(this.dialog.id)
     if (data.isSuccess) {
       this.dialog.isStatusVisible = false
       this.$message.success('操作成功')
@@ -421,7 +415,7 @@ export default class extends Vue {
   }
 
   // 启用，禁用筛选
-  filterHandler(value: any, row: any, column: any) {
+  filterHandler(value: boolean, row: any) {
     this.filterStatus = value
     return row.status === value
   }

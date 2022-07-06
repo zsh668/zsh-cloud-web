@@ -15,9 +15,9 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="名称：" prop="name">
+          <el-form-item label="名称：" prop="menuName">
             <el-input
-              v-model="userData.name"
+              v-model="userData.menuName"
               placeholder="请输入"
               autocomplete="off"
               minlength="1"
@@ -63,14 +63,26 @@
               />
             </el-input>
           </el-form-item>
-          <el-form-item label="状态：">
-            <el-radio-group v-model="userData.isEnable">
-              <el-radio :label="true">正常</el-radio>
-              <el-radio :label="false">停用</el-radio>
+          <el-form-item label="是否公开：">
+            <el-radio-group v-model="userData.isPublic">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="排序：" prop="sortValue">
             <el-input-number v-model="userData.sortValue" :min="0" />
+          </el-form-item>
+          <el-form-item label="描述：" prop="describe" class="textInfo">
+            <el-input
+              v-model="userData.describe"
+              placeholder="请输入"
+              type="textarea"
+              resize="none"
+              minlength="1"
+              maxlength="50"
+              @input="descInput"
+            />
+            <span class="numInfo">{{ texNum }}/50</span>
           </el-form-item>
           <el-form-item class="right">
             <el-button @click="handleClose"> 取 消 </el-button>
@@ -123,13 +135,15 @@ export default class extends Vue {
   }
   private userData = {
     parentId: '',
-    name: '',
+    menuName: '',
     path: '',
-    isEnable: true,
+    isPublic: false,
     sortValue: '0',
     icon: '',
-    component: ''
+    component: '',
+    describe: ''
   } as any
+  private texNum: number = 0
   private isClearable = true // 可清空（可选）
   private isAccordion = true // 可收起（可选）
   private valueId = ''
@@ -137,16 +151,14 @@ export default class extends Vue {
   private props = {
     // 配置项（必选）
     value: 'id',
-    label: 'name',
+    label: 'menuName',
     children: 'children'
     // disabled:true
   }
   private isIconVisible = false
   private formRules = {
-    parentId: [
-      { required: true, message: '请选择上级类目', trigger: 'change' }
-    ],
-    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    parentId: [{ required: true, message: '请选择上级类目', trigger: 'change' }],
+    menuName: [{ required: true, message: '请输入名称', trigger: 'blur' }],
     path: [{ required: true, message: '请输入URL', trigger: 'blur' }]
   }
   get optionData() {
@@ -291,6 +303,10 @@ export default class extends Vue {
     this.$emit('close')
     this.parentid = ''
     ;(this.$refs as any).tree.clearHandle()
+  }
+  descInput() {
+    let txtVal = (this.userData as any).describe.length
+    this.texNum = 0 + txtVal
   }
 }
 </script>

@@ -49,12 +49,11 @@ request({
     params
   })
 
-   // 修改组织状态
-export const editStatus = (data: any) =>
+   // 修改菜单状态
+export const editStatus = (id: any) =>
 request({
-  url: `/system/menus/enable`,
-  method: 'put',
-  data
+  url: `/system/menus/disable/${id}`,
+  method: 'put'
 })
 // 拖动排序
 export const move = (data: any) =>

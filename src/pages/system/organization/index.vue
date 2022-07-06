@@ -11,7 +11,7 @@
                 <el-col :span="6">
                   <el-form-item label="组织名称：">
                     <el-input
-                      v-model="searchData.name"
+                      v-model="searchData.orgName"
                       placeholder="请输入"
                       clearable
                       @clear="resetSearch"
@@ -31,9 +31,6 @@
             </el-form>
           </div>
         </div>
-        <div class="operationData">
-          <el-button v-if="$hasPermission('org:add')" type="primary" @click="handleAdd('')">添加组织</el-button>
-        </div>
         <module-tip :data-table="orgData" :list-loading="listLoading" />
         <div v-if="orgData.length > 0" class="organization">
           <el-table
@@ -51,7 +48,7 @@
             @row-click="handleClickRow"
           >
             <el-table-column
-              prop="name"
+              prop="orgName"
             >
               <template slot="header">
                 <span>
@@ -93,7 +90,7 @@
             </el-table-column>
           </el-table>
         </div>
-        <!-- 用户添加、编辑对话框 -->
+        <!-- 组织添加、编辑对话框 -->
         <user-add-dialog
           ref="userDialog"
           :dialog="dialog"
@@ -106,7 +103,7 @@
           @getOrgList="getOrgList"
         />
         <!-- end -->
-        <!-- 用户删除警告框 -->
+        <!-- 组织删除警告框 -->
         <delete
           ref="fileDialog"
           :dialog="dialog"
@@ -159,7 +156,7 @@ export default class extends Vue {
   private tableData = []
   private listLoading = true
   private delectData = []
-  private roleData = []
+  // private roleData = []
   private orgData = [] as any
   private oldList: number[] = []
   private newList: number[] = []
@@ -181,7 +178,7 @@ export default class extends Vue {
     valueId: '' // 初始ID（可选）
   }
   private searchData = {
-    name: ''
+    orgName: ''
   } as any
   private dialog = {
     id: '',
@@ -195,7 +192,7 @@ export default class extends Vue {
   }
   private editData = {
     parentId: '',
-    name: '',
+    orgName: '',
     status: true,
     sortValue: ''
   } as any
@@ -205,7 +202,7 @@ export default class extends Vue {
     data: [],
     props: {
       children: 'children',
-      label: 'name',
+      label: 'orgName',
       disabled: 'disabled',
       value: 'id'
     }
@@ -216,23 +213,15 @@ export default class extends Vue {
   private orgid='' as string
   private baseTreeData = [] as any
   created() {
-    this.getRole()
     this.getOrgList()
   }
   /// // 功能函数 /////
-  // 获取角色列表
-  private async getRole() {
-    const { data } = await getRole({ status: true })
-    if (data.isSuccess === true) {
-      this.roleData = data.data
-    }
-  }
   // 获取组织列表
   private async getOrgList() {
     const menuData = this.$store.state.baseTreeData
     this.listLoading = true
     const parent = {
-      name: this.searchData.name
+      orgName: this.searchData.orgName
     } as any
     if (this.searchData.status !== undefined) {
       parent.status = this.searchData.status
@@ -260,11 +249,7 @@ export default class extends Vue {
   }
   // 启用、禁用确认
   private async handleStateSubmit() {
-    const parent = {
-      id: this.dialog.id,
-      status: this.dialog.status
-    }
-    const { data } = await editStatus(parent)
+    const { data } = await editStatus(this.dialog.id)
     if (data.isSuccess) {
       this.$message.success('操作成功')
     } else {
@@ -320,10 +305,10 @@ export default class extends Vue {
     this.dialog.id = value.id
     this.dialog.status = value.status
     if (!value.status) {
-      this.dialog.msg = `"${value.name}" 将被禁止使用！`
+      this.dialog.msg = `"${value.orgName}" 将被禁止使用！`
       this.dialog.title = '确认禁用'
     } else {
-      this.dialog.msg = `"${value.name}" 启用！`
+      this.dialog.msg = `"${value.orgName}" 启用！`
       this.dialog.title = '确认启用'
     }
   }
@@ -333,7 +318,7 @@ export default class extends Vue {
     const { data } = await deletes({ ids: ids })
     if (data.isSuccess === true) {
       if (data.data.length > 0) {
-        this.$message.error('删除失败！请删除子级组织或用户后重试！')
+        this.$message.error('删除失败！请删除子级组织后重试！')
       } else {
         this.$message.success('操作成功！该组织在列表内删除')
         this.getOrgList()
@@ -426,16 +411,16 @@ export default class extends Vue {
     }
     return arrRes
   }
-  // 用户添加
+  // 组织添加
   handleAdd(row: any) {
     if (row.id !== '' || row.id !== undefined) {
       this.parentId = row.id
-      this.parentName = row.name
+      this.parentName = row.orgName
     }
     this.dialog.isVisible = true
     this.dialog.type = 'add'
     this.dialog.title = '添加'
-    this.searchData.name = ''
+    this.searchData.orgName = ''
     this.getOrgList()
   }
   // 内容控制字数，多出的用省略号
@@ -453,11 +438,11 @@ export default class extends Vue {
     this.addMenuClass(this.orgData, row.id)
     this.getEdit(row.id)
     this.orgid = row.id
-    this.roleData.forEach((item:any) => {
-      if (item.status === false || row.id === item.id) {
-          item.disabled = true
-      }
-    })
+    // this.roleData.forEach((item:any) => {
+    //   if (item.status === false || row.id === item.id) {
+    //       item.disabled = true
+    //   }
+    // })
   }
   // 拖拽排序
   async onTreeDataChange(
@@ -468,7 +453,7 @@ export default class extends Vue {
   ) {
     const parent = {
       id: from.id,
-      name: from.name,
+      orgName: from.orgName,
       parentId: from.parentId,
       sortValue: from.sortValue
     } as any
@@ -675,13 +660,13 @@ export default class extends Vue {
       {
         type: 'selection',
         title: '| 组织名称',
-        field: 'name',
+        field: 'orgName',
         width: 200,
         flex: 7,
         align: 'left',
         titleAlign: 'left',
         formatter: (item: any) => {
-          return '<span>' + item.name + '</span>'
+          return '<span>' + item.orgName + '</span>'
         }
       },
       {

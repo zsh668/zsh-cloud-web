@@ -175,12 +175,12 @@ import { ellipsis } from '@/utils'
 // interface接口
 import {
   TableData
-} from '@/pages/system/monitoring/interface/types'
+} from '@/pages/monitoring/interface/types'
 // 组件
 import Pagination from '@/components/Pagination/index.vue'
 import ModuleTip from '@/components/ModuleTip/index.vue'
 // api
-import { getList } from '@/pages/system/monitoring/api'
+import { getList } from '@/pages/monitoring/api'
 @Component({
   name: 'loginList',
   components: {
