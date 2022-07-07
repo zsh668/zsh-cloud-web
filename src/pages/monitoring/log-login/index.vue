@@ -33,14 +33,14 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="9">
-                  <el-form-item label="登录时间：" class="timeLabel" prop="loginDate">
+                  <el-form-item label="登录时间：" class="timeLabel" prop="loginTime">
                     <el-date-picker
-                      v-model="searchData.loginDate"
+                      v-model="searchData.loginTime"
                       value-format="yyyy-MM-dd HH:mm:ss"
-                      type="daterange"
+                      type="datetimerange"
                       range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
+                      start-placeholder="开始时间"
+                      end-placeholder="结束时间"
                       clearable
                       @change="handleTime"
                     />
@@ -140,7 +140,7 @@
                 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ row.loginDate }}</span>
+                <span>{{ row.loginTime }}</span>
               </template>
             </el-table-column>
             <el-table-column align="center">
@@ -197,9 +197,9 @@ export default class extends Vue {
     account: '',
     location: '',
     requestIp: '',
-    startCreateTime: '',
-    endCreateTime: '',
-    loginDate: [],
+    startLoginTime: '',
+    endLoginTime: '',
+    loginTime: [],
     size: 10,
     current: 1
   } as any
@@ -223,8 +223,8 @@ export default class extends Vue {
       account: this.searchData.account,
       location: this.searchData.location,
       requestIp: this.searchData.requestIp,
-      startCreateTime: this.searchData.startCreateTime,
-      endCreateTime: this.searchData.endCreateTime,
+      startLoginTime: this.searchData.startLoginTime,
+      endLoginTime: this.searchData.endLoginTime,
       ...this.pages
     }
     const { data } = await getList(parent)
@@ -245,9 +245,9 @@ export default class extends Vue {
   // 重置
   resetSearch() {
     (this.$refs.ruleForm as ElForm).resetFields()
-    delete this.searchData.startCreateTime
-    delete this.searchData.endCreateTime
-    delete this.searchData.loginDate
+    delete this.searchData.startLoginTime
+    delete this.searchData.endLoginTime
+    delete this.searchData.loginTime
     this.getList()
   }
   // 动态模糊搜索
@@ -278,8 +278,8 @@ export default class extends Vue {
   }
   // 获取开始时间和结束时间
   handleTime(val:any) {
-    this.searchData.startCreateTime = val[0]
-    this.searchData.endCreateTime = val[1]
+    this.searchData.startLoginTime = val[0]
+    this.searchData.endLoginTime = val[1]
   }
   // 内容控制字数，多出的用省略号
   ellipsis(value: any, num: any) {

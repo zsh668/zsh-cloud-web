@@ -9,7 +9,7 @@
             <el-form ref="ruleForm" :inline="true" :model="searchData">
               <el-row :gutter="18">
                 <el-col :span="5">
-                  <el-form-item label="账号：" prop="userName">
+                  <el-form-item label="姓名：" prop="userName">
                     <el-input
                       v-model="searchData.userName"
                       placeholder="请输入"
@@ -25,14 +25,14 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="9">
-                  <el-form-item label="登录时间：" class="timeLabel" prop="loginDate">
+                  <el-form-item label="操作时间：" class="timeLabel" prop="optTime">
                     <el-date-picker
-                      v-model="searchData.loginDate"
+                      v-model="searchData.optTime"
                       value-format="yyyy-MM-dd HH:mm:ss"
-                      type="daterange"
+                      type="datetimerange"
                       range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
+                      start-placeholder="开始时间"
+                      end-placeholder="结束时间"
                       clearable
                       @change="handleTime"
                     />
@@ -57,6 +57,7 @@
             fit
             stripe
             highlight-current-row
+            @filter-change="filterData"
           >
             <!-- <el-table-column type="selection" width="45" align="center" /> -->
             <el-table-column align="center" width="80" type="index" label="">
@@ -97,7 +98,7 @@
                 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ row.httpMethod.code }}</span>
+                <span>{{ row.httpMethod }}</span>
               </template>
             </el-table-column>
 
@@ -133,7 +134,7 @@
                 </span>
               </template>
               <template slot-scope="{ row }">
-                <span v-if="row.type.code==='OPT'">正常</span>
+                <span v-if="row.type==='OPT'">正常</span>
                 <span v-else>异常</span>
               </template>
             </el-table-column>
@@ -153,7 +154,7 @@
                 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ row.createTime }}</span>
+                <span>{{ row.startTime }}</span>
               </template>
             </el-table-column>
             <el-table-column width="150">
@@ -173,7 +174,7 @@
                 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ ellipsis(row.ua, 20) }}</span>
+                <span>{{ uaForamt(row.ua) }}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -181,8 +182,8 @@
           <pagination
             v-show="total > 0"
             :total="Number(total)"
-            :page.sync="searchData.current"
-            :limit.sync="searchData.size"
+            :page.sync="pages.current"
+            :limit.sync="pages.size"
             @pagination="getList"
           />
           <!-- end -->
@@ -195,7 +196,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { ElForm } from 'element-ui/types/form'
-import { ellipsis } from '@/utils'
+import { ellipsis, readUserAgent } from '@/utils'
 import { optTypeOptions, TypeOptions } from '@/utils/common-selete'
 // interface接口
 import {
@@ -224,7 +225,13 @@ export default class extends Vue {
   private searchData = {
     userName: '',
     requestIp: '',
-    loginDate: '',
+    startOptTime: '',
+    endOptTime: '',
+    optTime: [],
+    size: 10,
+    current: 1
+  } as any
+  private pages={
     size: 10,
     current: 1
   } as any
@@ -242,7 +249,15 @@ export default class extends Vue {
   // 获取数据
   private async getList() {
     this.listLoading = true
-    const { data } = await getOperationList({ ...this.searchData })
+    const parent = {
+      account: this.searchData.account,
+      location: this.searchData.location,
+      requestIp: this.searchData.requestIp,
+      startLoginTime: this.searchData.startLoginTime,
+      endLoginTime: this.searchData.endLoginTime,
+      ...this.pages
+    }
+    const { data } = await getOperationList(parent)
     if (data.isSuccess === true) {
       this.dataTable = data.data.list
       this.total = data.data.total
@@ -260,9 +275,11 @@ export default class extends Vue {
   // 重置
   resetSearch() {
     (this.$refs.ruleForm as ElForm).resetFields()
-    delete this.searchData.startCreateTime
-    delete this.searchData.endCreateTime
-    delete this.searchData.loginDate
+    delete this.searchData.startOptTime
+    delete this.searchData.endOptTime
+    delete this.searchData.optTime
+    delete this.searchData.type
+    delete this.searchData.httpMethod
     this.getList()
   }
   // 动态模糊搜索
@@ -293,31 +310,41 @@ export default class extends Vue {
   }
   // 获取开始时间和结束时间
   handleTime(val:any) {
-    this.searchData.startCreateTime = val[0]
-    this.searchData.endCreateTime = val[1]
+    this.searchData.startOptTime = val[0]
+    this.searchData.endOptTime = val[1]
   }
   // 筛选请求类型
   filterHandler(value:any, row:any) {
-    return row.httpMethod.code === value
+    return row.httpMethod === value
   }
   // 筛选类型
   filterHandlerType(value:any, row:any) {
     this.filterStatus = value
-    return row.type.code === value
+    return row.type === value
   }
   // 筛选数据状态
   filterData(filter:any) {
-    const status = filter['type']
-    if (status.length > 0) {
+    const type = filter['type']
+    if (type !== undefined && type.length > 0) {
       this.searchData.type = this.filterStatus
     } else {
       this.searchData.type = null
+    }
+    const method = filter['httpMethod']
+    if (method !== undefined && method.length > 0) {
+      this.searchData.httpMethod = method.toString()
+    } else {
+      this.searchData.httpMethod = ''
     }
     this.getList()
   }
   // 内容控制字数，多出的用省略号
   ellipsis(value: any, num: any) {
     return ellipsis(value, num)
+  }
+  uaForamt(value: any) {
+    let ua = readUserAgent(value)
+    return ua.terminal + '  |  ' + ua.browser
   }
 }
 </script>
