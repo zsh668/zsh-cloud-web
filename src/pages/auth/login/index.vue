@@ -224,7 +224,7 @@ export default class extends Vue {
           params.description = '登录成功！'
           this.loading = false
         } else {
-          this.$message.error(res.msg || '操作失败')
+          // this.$message.error(res.msg || '操作失败')
           this.loading = false
           this.getCode(this.randomId)
           params.description = res.msg
