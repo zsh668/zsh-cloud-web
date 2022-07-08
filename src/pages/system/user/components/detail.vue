@@ -12,7 +12,7 @@
           <label>账号：</label>{{ editData.account }}
         </li>
         <li>
-          <label>姓名：</label>{{ editData.name }}
+          <label>姓名：</label>{{ editData.userName }}
         </li>
         <li>
           <label>部门：</label>{{ editData.orgName }}
@@ -21,18 +21,21 @@
           <label>岗位：</label>{{ editData.stationName }}
         </li>
         <li>
-          <label>上级领导：</label>{{ superiorName }}
+          <label>上级领导：</label>{{ editData.superiorName?String(editData.superiorName):'' }}
         </li>
         <li>
-          <label>性别：</label>{{ editData.sex.desc }}
+          <label>性别：</label>{{ editData.genderDesc }}
         </li>
         <li>
           <label>状态：</label><span v-if="editData.status === true">启用</span><span v-else>禁用</span>
         </li>
         <li>
-          <label>创建时间：</label>{{ editData.updateTime }}
+          <label>创建时间：</label>{{ editData.createdTime }}
         </li>
-        <li style="width: 100% !important;">
+        <li>
+          <label>更新时间：</label>{{ editData.updatedTime }}
+        </li>
+        <li>
           <label>最后登录时间：</label>{{ editData.lastLoginTime }}
         </li>
         <li style="width: 100% !important;">
@@ -69,28 +72,11 @@ export default class extends Vue {
   @Prop() private dialog!: any
   @Prop() private editData!: {}
   /// // 功能函数 /////
-  private superiorName = ''
   private hierachyData = {}
   /// // ui /////
   // 表单取消
   private handleClose() {
     this.dialog.isViewVisible = false
-  }
-  @Watch('editData')
-  getSuperior(value: any) {
-    if (value.superior && value.superior !== '-1') {
-      this.getSuperiorName(value.superior)
-    }
-  }
-  /// // 功能函数 /////
-  // 获取详情
-  private async getSuperiorName(id: string) {
-    const { data } = await detailUser(id)
-    if (data.isSuccess === true) {
-      if (data.data) {
-        this.superiorName = data.data.name
-      }
-    }
   }
   // 初始化
   private init() {

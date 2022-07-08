@@ -163,13 +163,34 @@
               </template>
               <template slot-scope="{ row }">
                 <div class="operation">
-                  <!-- <span @click="handleView(row.id)">查看</span>
-                  <span @click="handleEdit(row.id)">修改</span>
-                  <span class="delect" @click="handleDelete(row)">删除</span> -->
                   <el-button v-if="$hasPermission('user:get')" class="inputText" @click="handleView(row.id)">查看</el-button>
-                  <el-button v-if="$hasPermission('user:update')" class="inputText" :disabled="!row.status" @click="handleEdit(row.id)">修改</el-button>
-                  <el-button v-if="$hasPermission('user:delete')" class="inputText delect" :disabled="!row.status" @click="handleDelete(row)">删除</el-button>
-                  <el-button v-if="$hasPermission('user:update-role')" class="inputText" :disabled="!row.status" @click="handleEditRole(row.id)">分配角色</el-button>
+                  <el-dropdown>
+                    <span class="el-dropdown-link" style="color:#009EFF; font-size:12px">
+                      更多<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item v-if="$hasPermission('user:update')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-edit" style="color: #009EFF;" @click.native="handleEdit(row.id)"
+                      >
+                        修改
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="$hasPermission('user:delete')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-delete" style="color: #E05635;" @click.native="handleDelete(row.id)"
+                      >
+                        删除
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="$hasPermission('user:reset')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleReset(row.id)"
+                      >
+                        重置密码
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="$hasPermission('user:update-role')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleEditRole(row.id)"
+                      >
+                        重置密码
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </div>
               </template>
             </el-table-column>
@@ -190,6 +211,7 @@
           :dialog="dialog"
           :org-data="optionData"
           :role-data="roleData"
+          :superior-data="superiorData"
           :tree-data="treeData"
           :get-value="getValue"
           :user-data="editData"
@@ -234,6 +256,12 @@
           @handle-close="handleCloseStatus"
           @state-submit="handleStateSubmit"
         />
+        <base-dialog
+          ref="userPassword"
+          :dialog="dialogData"
+          @handle-close="handleCloseStatus"
+          @state-submit="handleResetSubmit"
+        />
         <!-- end -->
       </div>
     </div>
@@ -271,14 +299,13 @@ import {
   IUserFreezeRequest
 } from '@/pages/system/user/interface/types'
 // api
-import { getRepelRole, getAllTree } from '@/api/api'
+import { getRepelRole, getAllTree, getAllStation } from '@/api/api'
 import {
   getList,
   delUser,
-  editUser,
-  detailUser, disableUser
+  detailUser,
+  disableUser, getUserList, resetUser
 } from '@/pages/system/user/api'
-import { getApply } from '@/utils/cookies'
 
 @Component({
   name: 'UserList',
@@ -302,6 +329,7 @@ export default class extends Vue {
   private delectData = []
   private roleData: ICommonSelectOptions[] = []
   private orgData = []
+  private superiorData = []
   private deleData = {} as any
   private ref: any = this.$refs
   private treeData = {
@@ -344,16 +372,21 @@ export default class extends Vue {
   private editData: IUserFreezeRequest = {
     account: '', // 账号
     userName: '', // 姓名
-    password: '123#456', // 密码
+    email: '', // 邮箱
     mobile: '', // 手机
     avatar: '', // 头像
     stationId: '', // 岗位
     superior: '', // 上级领导
-    roles: [], // 角色
-    sex: 1, // 性别
-    status: true, // 状态
+    roleIds: [], // 角色
+    gender: 1, // 性别
     orgId: '' // 组织
   }
+  private dialogData = {
+    id: '',
+    isStatusVisible: false,
+    msg: ''
+  }
+  private userIds:any = []
   private ivewData = {}
   private treeParams = {
     clickParent: false,
@@ -366,10 +399,8 @@ export default class extends Vue {
       value: 'id'
     }
   }
-  private values = ''
   private newIndex = 0
   private newData = {} as any
-  private filterStatus = true
 
   private defaultProps = {
     children: 'children',
@@ -409,6 +440,7 @@ export default class extends Vue {
     this.getList()
     this.getRole()
     this.getOrg()
+    this.getSuperiorData()
   }
 
   /// // 功能函数 /////
@@ -435,9 +467,6 @@ export default class extends Vue {
 
   // 获取角色列表
   private async getRole() {
-    const params = {
-      status: true
-    }
     const { data } = await getRepelRole({ status: '' })
     if (data.isSuccess === true) {
       this.roleData = data.data.list
@@ -462,6 +491,20 @@ export default class extends Vue {
       }
 
       this.treeData.treeShow = true // 解决异步数据子组件获取不到值的问题
+    }
+  }
+
+  // 获取用户列表
+  private async getSuperiorData() {
+    const { data } = await getUserList({})
+    if (data.isSuccess === true) {
+      this.superiorData = data.data.list
+      this.superiorData.forEach((item: any) => {
+        item.disabled = false
+        if (item.status === false) {
+          item.disabled = true
+        }
+      })
     }
   }
 
@@ -572,6 +615,23 @@ export default class extends Vue {
     this.roleDialog.isVisible = true
     this.getEdit(id)
   }
+  // 重置密码
+  handleReset(id: string) {
+    this.dialogData.id = id
+    this.dialogData.isStatusVisible = true
+    this.dialogData.msg = '确认重置该用户的密码吗?'
+  }
+  // 重置密码提交
+  private async handleResetSubmit() {
+    this.userIds = [(this.dialogData as any).id]
+    const { data } = await resetUser({ ids: this.userIds })
+    if (data.isSuccess === true) {
+      this.dialogData.isStatusVisible = false
+      this.$message.success('操作成功')
+    } else {
+      // this.$message.error(data.msg)
+    }
+  }
 
   // 获取组织树id
   getValue(value: any) {
@@ -594,12 +654,14 @@ export default class extends Vue {
   resetSearch() {
     (this.$refs.ruleForm as ElForm).resetFields()
     this.searchData.orgId = ''
+    this.searchData.account = ''
+    this.searchData.userName = ''
+    this.searchData.roleId = ''
     this.getList()
   }
 
   // 启用，禁用筛选
-  filterHandler(value: any, row: any, column: any) {
-    this.filterStatus = value
+  filterHandler(value: any, row: any) {
     return row.status === value
   }
 
@@ -607,7 +669,7 @@ export default class extends Vue {
   filterData(filter: any) {
     const status = filter['status']
     if (status.length > 0) {
-      this.searchData.status = this.filterStatus
+      this.searchData.status = status.toString()
     } else {
       this.searchData.status = null
     }
@@ -748,7 +810,6 @@ export default class extends Vue {
       // white-space: nowrap;
       // text-overflow: ellipsis;
     }
-
     .el-tree-node__content {
       height: 32px !important;
 

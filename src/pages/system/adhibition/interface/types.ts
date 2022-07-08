@@ -1,13 +1,13 @@
 export interface ITableData {
     abbreviation?: string
-    createTime?: string
-    createUser?: number
+    createdTime?: string
+    createdBy?: string
     describe?: string
     id?: number
     name?: string
     status?: boolean
-    updateTime?: string
-    updateUser?: number
+    updatedTime?: string
+    updatedBy?: string
 }
 
 export interface IPostTable {

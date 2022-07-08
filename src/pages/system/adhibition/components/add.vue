@@ -120,8 +120,8 @@ export default class extends Vue {
   }
   // 编辑用户
   private async updateSave() {
-    delete this.baseData.createTime
-    delete this.baseData.updateTime
+    delete this.baseData.createdTime
+    delete this.baseData.updatedTime
     const parent = {
       id: this.baseData.id,
       name: this.baseData.name,

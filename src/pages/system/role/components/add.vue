@@ -142,8 +142,8 @@ export default class extends Vue {
   }
   // 编辑用户
   private async updateSave() {
-    delete (this.formdata as any).createTime
-    delete (this.formdata as any).updateTime
+    delete (this.formdata as any).createdTime
+    delete (this.formdata as any).updatedTime
     const { data } = await editRole(this.formdata)
     if (data.isSuccess) {
       (this.$refs.ruleForm as ElForm).resetFields()

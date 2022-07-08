@@ -49,7 +49,7 @@
           </div>
         </div>
 
-        <div v-if="dataTable.length>0">
+        <div>
           <el-table
             ref="table"
             :data="dataTable"
@@ -221,7 +221,6 @@ export default class extends Vue {
   private timeID?: number = undefined
   private optTypeOptions = [] as any
   private TypeOptions = [] as any
-  private filterStatus=true
   private searchData = {
     userName: '',
     requestIp: '',
@@ -249,15 +248,7 @@ export default class extends Vue {
   // 获取数据
   private async getList() {
     this.listLoading = true
-    const parent = {
-      account: this.searchData.account,
-      location: this.searchData.location,
-      requestIp: this.searchData.requestIp,
-      startLoginTime: this.searchData.startLoginTime,
-      endLoginTime: this.searchData.endLoginTime,
-      ...this.pages
-    }
-    const { data } = await getOperationList(parent)
+    const { data } = await getOperationList({ ...this.searchData })
     if (data.isSuccess === true) {
       this.dataTable = data.data.list
       this.total = data.data.total
@@ -319,14 +310,13 @@ export default class extends Vue {
   }
   // 筛选类型
   filterHandlerType(value:any, row:any) {
-    this.filterStatus = value
     return row.type === value
   }
   // 筛选数据状态
   filterData(filter:any) {
     const type = filter['type']
     if (type !== undefined && type.length > 0) {
-      this.searchData.type = this.filterStatus
+      this.searchData.type = type.toString()
     } else {
       this.searchData.type = null
     }
@@ -334,7 +324,7 @@ export default class extends Vue {
     if (method !== undefined && method.length > 0) {
       this.searchData.httpMethod = method.toString()
     } else {
-      this.searchData.httpMethod = ''
+      this.searchData.httpMethod = null
     }
     this.getList()
   }

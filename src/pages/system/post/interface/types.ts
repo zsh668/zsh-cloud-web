@@ -1,13 +1,13 @@
 export interface IPostTableData {
-    createTime?:string
-    createUser?: number
+    createdTime?:string
+    createdBy?: string
     describe?: string
     id?: number
     name?: string
     orgId?: number
     orgName?: string
     status?: boolean
-    updateTime?: string
+    updatedTime?: string
     updateUser?:number
 }
 

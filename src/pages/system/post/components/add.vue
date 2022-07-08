@@ -131,8 +131,8 @@ export default class extends Vue {
   }
   // 编辑用户
   private async updateSave() {
-    delete (this.baseData as any).createTime
-    delete (this.baseData as any).updateTime
+    delete (this.baseData as any).createdTime
+    delete (this.baseData as any).updatedTime
     const { data } = await editPost(this.baseData)
     if (data.isSuccess) {
       this.$message({
