@@ -6,9 +6,9 @@
     :before-close="handleClose"
   >
     <div class="detailBox">
-      <ul v-if="editData.name !== undefined" class="dialogTable">
-        <li v-if="editData.name !== '' && editData.name !== null">
-          <label>用户组名称：</label>{{ editData.name }}
+      <ul v-if="editData.groupName !== undefined" class="dialogTable">
+        <li v-if="editData.groupName !== '' && editData.groupName !== null">
+          <label>用户组名称：</label>{{ editData.groupName }}
         </li>
         <li v-if="editData.roleName !== '' && editData.roleName !== null">
           <label>角色：</label>{{ editData.roleName }}

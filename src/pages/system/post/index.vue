@@ -29,7 +29,7 @@
           <el-button v-if="$hasPermission('station:add')" type="primary" @click="handleAdd">添加岗位</el-button>
         </div>
         <module-tip :data-table="dataTable" :list-loading="listLoading" />
-        <div v-if="dataTable.length>0">
+        <div>
           <el-table
             ref="table"
             :data="dataTable"
@@ -179,7 +179,6 @@ export default class extends Vue {
   private listLoading = true
   private deleteId = ''
   private ref: any = this.$refs
-  private filterStatus=true
   private treeData = {
     treeShow: false,
     valueId: '' // 初始ID（可选）
@@ -341,15 +340,14 @@ export default class extends Vue {
     this.getList()
   }
   // 启用，禁用筛选
-  filterHandler(value: boolean, row: any) {
-    this.filterStatus = value
+  filterHandler(value: boolean, row: any, column: any) {
     return row.status === value
   }
   // 筛选数据状态
   filterData(filter:any) {
     const status = filter['status']
     if (status.length > 0) {
-      this.searchData.status = this.filterStatus
+      this.searchData.status = status.toString()
     } else {
       this.searchData.status = null
     }

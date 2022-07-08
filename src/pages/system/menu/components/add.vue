@@ -245,8 +245,8 @@ export default class extends Vue {
   }
   // 编辑
   private async updateSave() {
-    delete (this.userData as any).createTime
-    delete (this.userData as any).updateTime
+    delete (this.userData as any).createdTime
+    delete (this.userData as any).updatedTime
     const { data } = await editMenu(this.userData)
     if (data.isSuccess) {
       this.$message({

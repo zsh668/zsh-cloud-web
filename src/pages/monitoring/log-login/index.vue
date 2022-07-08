@@ -56,7 +56,7 @@
             <el-button @click="resetSearch"> 重置 </el-button>
           </div>
         </div>
-        <div v-if="dataTable.length>0">
+        <div>
           <el-table
             ref="table"
             :data="dataTable"

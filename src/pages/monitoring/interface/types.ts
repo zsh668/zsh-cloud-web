@@ -2,8 +2,8 @@ export interface TableData {
   account?: string
   browser?: string
   browserVersion?: string
-  createTime?: string
-  createUser?: number
+  createdTime?: string
+  createdBy?: string
   description?: string
   id?: number
   location?: string

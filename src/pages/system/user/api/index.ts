@@ -56,16 +56,16 @@ export const delUser = (data: any) =>
     data
   })
 // 重置密码
-export const resetUser = (params: any) =>
+export const resetUser = (data: any) =>
   request({
     url: `/system/users/reset`,
-    method: 'get',
-    params
+    method: 'put',
+    data
   })
 
 // 获取用户关系
 export const userHierarchy = (id: any) =>
   request({
-    url: `/system/user/hierarchy/${id}`,
+    url: `/system/users/hierarchy/${id}`,
     method: 'get'
   })

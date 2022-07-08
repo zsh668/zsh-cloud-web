@@ -1,15 +1,15 @@
 // 列表
 export interface IArticleData {
-  createTime?: string
-  createUser?: number
+  createdTime?: string
+  createdBy?: string
   describe?: string
   id?: number
   name?: string
   roleId?: number
   roleName?: string
   status?: boolean
-  updateTime?: string
-  updateUser?: number
+  updatedTime?: string
+  updatedBy?: string
   userCount?: number
 }
 
@@ -24,16 +24,16 @@ export interface IManageUserPageListEntity {
 
 // 表单
 export interface IUserFreezeRequest {
-  createTime?: string
-  createUser?: number
+  createdTime?: string
+  createdBy?: string
   describe?: string
   id?: number
   name?: string
   roleId?: string
   roleName?: string
   status?: boolean
-  updateTime?: string
-  updateUser?: number
+  updatedTime?: string
+  updatedBy?: string
   userCount?: number
   userIds?: []
   userNames?: []

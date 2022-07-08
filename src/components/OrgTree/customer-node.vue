@@ -1,11 +1,11 @@
 <template>
   <div class="customer-node" :style="{width: data.width||width||'auto'}">
     <div class="root-node" @click.stop.prevent="toggleInfo">
-      <span class="icon-bg" :class="{'man': data.sex && data.sex.desc==='男'}">
+      <span class="icon-bg" :class="{'man': data.gender && data.genderDesc==='男'}">
         <i class="el-icon-user-solid"></i>
       </span>
-      <span class="title">{{ data.name }}</span>
-      <!-- <span class="sex">{{ data.sex.desc || '未知' }}</span> -->
+      <span class="title">{{ data.userName }}</span>
+      <!-- <span class="sex">{{ data.genderDesc || '未知' }}</span> -->
     </div>
     <transition name="fade-in">
       <div class="info-list-wrap">

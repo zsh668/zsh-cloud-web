@@ -42,7 +42,7 @@
               </p>
             <!-- <p>
                   <span class="name-label">创建时间：  </span>
-                  <span class="name-date">{{ item.createTime }}</span>
+                  <span class="name-date">{{ item.createdTime }}</span>
                 </p> -->
             </div>
           </div>

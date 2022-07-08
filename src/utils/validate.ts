@@ -30,7 +30,24 @@ export const validateName = (rule: any, value: string, callback: Function) => {
     callback()
   }
 }
-//
+// 邮箱
+export function validateEmail(rule: any, value: any, callback: any) {
+  const reg = /^([a-z0-9A-Z]+[-|.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$$/
+  if (value === '' || value === undefined || value === null) {
+    if (rule.required) {
+      callback(new Error('请输入邮箱'))
+    } else {
+      callback()
+    }
+  } else {
+    if (!reg.test(value) && value !== '') {
+      callback(new Error('请输入正确的邮箱'))
+    } else {
+      callback()
+    }
+  }
+}
+// 手机号
 export function validatePhone(rule: any, value: any, callback: any) {
   const reg = /^[1][3-9][0-9]{9}$/
   if (value === '' || value === undefined || value === null) {

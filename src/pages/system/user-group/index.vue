@@ -39,115 +39,119 @@
         <div class="operationData">
           <el-button v-if="$hasPermission('userGroup:add')" type="primary" @click="handleAdd">用户组添加</el-button>
         </div>
-        <module-tip :data-table="dataTable.list" :list-loading="listLoading" />
-        <el-table
-          ref="table"
-          :data="dataTable.list"
-          border
-          fit
-          stripe
-          highlight-current-row
-          style="width: 100%"
-          @selection-change="handleSelectionChange"
-          @filter-change="filterData"
-        >
-          <el-table-column width="80" align="center" type="index" label="">
-            <template slot="header">
-              <span> | 序号 </span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center">
-            <template slot="header">
-              <span> | 用户组名称 </span>
-            </template>
-            <template slot-scope="{ row }">
-              <span>{{ row.groupName }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center">
-            <template slot="header">
-              <span> | 角色 </span>
-            </template>
-            <template slot-scope="{ row }">
-              <span>{{ row.roleName }}</span>
-            </template>
-          </el-table-column>
-
-          <el-table-column align="center">
-            <template slot="header">
-              <span> | 用户数量 </span>
-            </template>
-            <template slot-scope="{ row }">
-              <span>{{ row.userCount }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column class-name="status-col">
-            <template slot="header">
-              <span> | 描述 </span>
-            </template>
-            <template slot-scope="{ row }">
-              <span>{{ ellipsis(row.describe, 10) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="状态"
-            align="center"
-            :filter-multiple="false"
-            :filters="[
-              { text: '启用', value: true },
-              { text: '禁用', value: false }
-            ]"
-            column-key="status"
-            :filter-method="filterHandler"
+        <module-tip :data-table="dataTable.list" :list-loading="listLoading"/>
+        <div>
+          <el-table
+            ref="table"
+            :data="dataTable.list"
+            border
+            fit
+            stripe
+            highlight-current-row
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+            @filter-change="filterData"
           >
-            <template slot="header">
-              <span>
-                | 状态
-                <i class="iconfont">&#xe62b;</i>
-              </span>
-            </template>
-            <template slot-scope="{ row,$index }">
-              <el-switch v-model="row.status" :disabled="!$hasPermission('userGroup:disable')" @change="handleState(row,$index)" />
-            </template>
-          </el-table-column>
-          <el-table-column align="center">
-            <template slot="header">
-              <span> | 操作 </span>
-            </template>
-            <template slot-scope="{ row }">
-              <div class="operation">
-                <!-- <span @click="handleView(row.id)">查看</span>
-                <span @click="handleEdit(row.id)">修改</span>
-                <span class="delect" @click="handleDelete(row)">删除</span> -->
-                <el-button v-if="$hasPermission('userGroup:get')" class="inputText" :disabled="!row.status"
-                           @click="handleView(row.id)"
-                >
-                  查看
-                </el-button>
-                <el-button v-if="$hasPermission('userGroup:update')" class="inputText" :disabled="!row.status"
-                           @click="handleEdit(row.id)"
-                >
-                  修改
-                </el-button>
-                <el-button v-if="$hasPermission('userGroup:delete')" class="inputText delect" :disabled="!row.status"
-                           @click="handleDelete(row)"
-                >
-                  删除
-                </el-button>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column width="80" align="center" type="index" label="">
+              <template slot="header">
+                <span> | 序号 </span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center">
+              <template slot="header">
+                <span> | 用户组名称 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <span>{{ row.groupName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center">
+              <template slot="header">
+                <span> | 角色 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <span>{{ row.roleName }}</span>
+              </template>
+            </el-table-column>
+
+            <el-table-column align="center">
+              <template slot="header">
+                <span> | 用户数量 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <span>{{ row.userCount }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column class-name="status-col">
+              <template slot="header">
+                <span> | 描述 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <span>{{ ellipsis(row.describe, 10) }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="状态"
+              align="center"
+              :filter-multiple="false"
+              :filters="[
+                { text: '启用', value: true },
+                { text: '禁用', value: false }
+              ]"
+              column-key="status"
+              :filter-method="filterHandler"
+            >
+              <template slot="header">
+                <span>
+                  | 状态
+                  <i class="iconfont">&#xe62b;</i>
+                </span>
+              </template>
+              <template slot-scope="{ row,$index }">
+                <el-switch v-model="row.status" :disabled="!$hasPermission('userGroup:disable')"
+                           @change="handleState(row,$index)"
+                />
+              </template>
+            </el-table-column>
+            <el-table-column align="center">
+              <template slot="header">
+                <span> | 操作 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <div class="operation">
+                  <!-- <span @click="handleView(row.id)">查看</span>
+                  <span @click="handleEdit(row.id)">修改</span>
+                  <span class="delect" @click="handleDelete(row)">删除</span> -->
+                  <el-button v-if="$hasPermission('userGroup:get')" class="inputText" :disabled="!row.status"
+                             @click="handleView(row.id)"
+                  >
+                    查看
+                  </el-button>
+                  <el-button v-if="$hasPermission('userGroup:update')" class="inputText" :disabled="!row.status"
+                             @click="handleEdit(row.id)"
+                  >
+                    修改
+                  </el-button>
+                  <el-button v-if="$hasPermission('userGroup:delete')" class="inputText delect" :disabled="!row.status"
+                             @click="handleDelete(row)"
+                  >
+                    删除
+                  </el-button>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!-- 分页 -->
+          <pagination
+            v-show="total > 0"
+            :total="total"
+            :page.sync="searchData.current"
+            :limit.sync="searchData.size"
+            @pagination="getList"
+          />
+          <!-- end -->
+        </div>
       </div>
-      <!-- 分页 -->
-      <pagination
-        v-show="dataTable.total > 0"
-        :total="Number(dataTable.total)"
-        :page.sync="searchData.current"
-        :limit.sync="searchData.size"
-        @pagination="getList"
-      />
-      <!-- end -->
     </div>
     <!-- 用户组添加、编辑对话框 -->
     <user-add-dialog
@@ -234,6 +238,7 @@ export default class extends Vue {
   } as any
   private listLoading = true
   private delectData = []
+  private total = 0
   private roleData: ICommonSelectOptions[] = []
   private orgData = []
   private deleData = {}
@@ -245,7 +250,7 @@ export default class extends Vue {
     id: '',
     groupName: '',
     roleId: '',
-    size: 2,
+    size: 10,
     current: 1
   } as any
   private dialog = {
@@ -261,7 +266,6 @@ export default class extends Vue {
   }
   private newIndex = 0
   private newData = {} as any
-  private filterStatus = true
 
   private editData: IUserFreezeRequest = {
     groupName: '', // 用户组名称
@@ -298,6 +302,7 @@ export default class extends Vue {
     const { data } = await getUserGroupList({ ...this.searchData })
     if (data.isSuccess === true) {
       this.dataTable = data.data
+      this.total = Number(data.data.total)
     }
     // Just to simulate the time of the request
     setTimeout(() => {
@@ -416,7 +421,6 @@ export default class extends Vue {
 
   // 启用，禁用筛选
   filterHandler(value: boolean, row: any) {
-    this.filterStatus = value
     return row.status === value
   }
 
@@ -424,7 +428,7 @@ export default class extends Vue {
   filterData(filter: any) {
     const status = filter['status']
     if (status.length > 0) {
-      this.searchData.status = this.filterStatus
+      this.searchData.status = status.toString()
     } else {
       this.searchData.status = null
     }

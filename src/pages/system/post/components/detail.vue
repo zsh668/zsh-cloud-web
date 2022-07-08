@@ -19,14 +19,14 @@
         <li v-if="editData.stationName !== '' && editData.stationName !== null">
           <label>岗位：</label>{{ editData.stationName }}
         </li>
-        <li v-if="editData.desc !== '' && editData.desc !== null">
-          <label>性别：</label>{{ editData.sex.desc }}
+        <li v-if="editData.genderDesc !== '' && editData.genderDesc !== null">
+          <label>性别：</label>{{ editData.genderDesc }}
         </li>
         <li v-if="editData.status !== '' && editData.status !== null">
           <label>状态：</label><span v-if="editData.status === true">启用</span><span v-else>禁用</span>
         </li>
-        <li v-if="editData.updateTime !== '' && editData.updateTime !== null">
-          <label>创建时间：</label>{{ editData.updateTime }}
+        <li v-if="editData.createdTime !== '' && editData.createdTime !== null">
+          <label>创建时间：</label>{{ editData.createdTime }}
         </li>
         <li
           v-if="

@@ -1,6 +1,6 @@
 export interface RoleTableData {
   roleCode?:string
-  createTime?:string
+  createdTime?:string
   createUser?:number
   describe?: string
   dsType?: DsType
@@ -9,8 +9,8 @@ export interface RoleTableData {
   readonly?: boolean
   repel?: number
   status?: boolean
-  updateTime?: string
-  updateUser?: number
+  updatedTime?: string
+  updatedBy?: string
 }
 
 export interface DsType {

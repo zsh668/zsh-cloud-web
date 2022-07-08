@@ -29,7 +29,7 @@
                 v-for="item in roleData"
                 :key="item.id"
                 :disabled="item.disabled"
-                :label="item.name"
+                :label="item.roleName"
                 :value="item.id"
               />
             </el-select>
@@ -86,8 +86,8 @@ export default class extends Vue {
   /// // 功能函数 /////
   // 编辑用户
   private async updateSave() {
-    delete (this.userData as any).createTime
-    delete (this.userData as any).updateTime
+    delete (this.userData as any).createdTime
+    delete (this.userData as any).updatedTime
     const { data } = await editUserRole(this.userData)
     if (data.isSuccess) {
       this.dialog.isVisible = false

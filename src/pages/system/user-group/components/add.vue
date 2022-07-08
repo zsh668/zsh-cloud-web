@@ -14,15 +14,15 @@
         label-width="120px"
         class="demo-ruleForm"
       >
-        <el-form-item label="用户组名称：" prop="name">
+        <el-form-item label="用户组名称：" prop="groupName">
           <el-input
             v-if="dialog.title === '添加'"
-            v-model="userData.name"
+            v-model="userData.groupName"
             minlength="1" maxlength="12"
             autocomplete="off"
             placeholder="请输入"
           />
-          <span v-else>{{ userData.name }}</span>
+          <span v-else>{{ userData.groupName }}</span>
         </el-form-item>
         <el-form-item label="成员：" prop="userIds">
           <select-tree
@@ -43,7 +43,7 @@
               v-for="item in roleData"
               :key="item.id"
               :disabled="!item.status"
-              :label="item.name"
+              :label="item.roleName"
               :value="item.id"
             />
           </el-select>
@@ -57,12 +57,6 @@
             @input="descInput"
           />
           <span class="numInfo">{{ texNum }}/50</span>
-        </el-form-item>
-        <el-form-item label="状态：">
-          <el-radio-group v-model="userData.status">
-            <el-radio :label="true">启用</el-radio>
-            <el-radio :label="false">禁用</el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
     </div>
@@ -108,7 +102,7 @@ export default class extends Vue {
   private userIds = [] as any
   private texNum: number = 0
   private formRules = {
-    name: [{ validator: validateName, required: true, trigger: 'change' }],
+    groupName: [{ validator: validateName, required: true, trigger: 'change' }],
     roleId: [{ required: true, message: '请选择角色', trigger: 'change' }],
     userIds: [
       { validator: this.validateUser, required: true, trigger: 'fouse' }

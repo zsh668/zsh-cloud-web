@@ -2,8 +2,8 @@
 export interface IArticleData {
   account?: string
   avatar?: string
-  createTime?: string
-  createUser?: number
+  createdTime?: string
+  createdBy?: string
   email?: string
   id?: string
   lastLoginTime?: string
@@ -16,14 +16,14 @@ export interface IArticleData {
   passwordErrorNum?: number
   passwordExpireTime?: string
   roleNames?: any[]
-  roles?: any[]
-  sex?: number
+  roleIds?: any[]
+  gender?: number
   stationId?: number
   superior?: string
   stationName?: string
   status?: boolean
-  updateTime?: string
-  updateUser?: number
+  updatedTime?: string
+  updatedBy?: string
   workDescribe?: string
 }
 // 用户翻页
@@ -35,10 +35,6 @@ export interface IManageUserPageListEntity {
   list?: IArticleData[]
 }
 
-export interface Sex {
-  code: string
-  desc: string
-}
 // 表单
 export interface IUserFreezeRequest {
   account?: string
@@ -50,9 +46,8 @@ export interface IUserFreezeRequest {
   orgId?: string
   superior?: string
   password?: string
-  roles?:[]
-  sex?: number
+  roleIds?:[]
+  gender?: number
   stationId?: string
-  status?: boolean
   workDescribe?: string
 }

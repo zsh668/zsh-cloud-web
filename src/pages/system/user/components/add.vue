@@ -19,17 +19,17 @@
             <el-input v-if="dialog.title === '添加'" v-model="userData.account" minlength="3" maxlength="20" />
             <span v-else>{{ userData.account }}</span>
           </el-form-item>
-          <el-form-item label="姓名：" prop="name">
-            <el-input v-model="userData.name" autocomplete="off" minlength="1" maxlength="12" />
+          <el-form-item label="姓名：" prop="userName">
+            <el-input v-model="userData.userName" autocomplete="off" minlength="1" maxlength="12" />
           </el-form-item>
-          <el-form-item label="密码：">
+          <!-- <el-form-item label="密码：">
             <el-tooltip
-              content="用户的默认密码为123456"
+              content="用户的默认密码为123#456"
               class="item"
               effect="dark"
               placement="top-start"
             >
-              <span>123456</span>
+              <span>123#456</span>
             </el-tooltip>
             <el-button
               v-if="dialog.type === 'edit'"
@@ -38,6 +38,9 @@
             >
               重置密码
             </el-button>
+          </el-form-item> -->
+          <el-form-item label="邮箱：" prop="email">
+            <el-input v-model="userData.email" autocomplete="off" minlength="5" maxlength="50" />
           </el-form-item>
           <el-form-item label="手机号：" prop="mobile">
             <el-input v-model="userData.mobile" autocomplete="off" minlength="11" maxlength="11" />
@@ -61,7 +64,7 @@
                 v-for="item in superiorData"
                 :key="item.id"
                 :disabled="!item.status"
-                :label="item.name"
+                :label="item.userName"
                 :value="item.id"
               />
             </el-select>
@@ -72,7 +75,7 @@
                 v-for="item in stationData"
                 :key="item.id"
                 :disabled="!item.status"
-                :label="item.name"
+                :label="item.stationName"
                 :value="item.id"
               />
             </el-select>
@@ -80,33 +83,37 @@
           <el-form-item label="角色：" prop="roles">
             <el-select
               ref="roles"
-              v-model="userData.roles"
+              v-model="userData.roleIds"
               multiple
               value-key="id"
               :multiple-limit="limitNumber"
               placeholder="请选择"
-              @change="handleRepel(userData.roles)"
+              @change="handleRepel(userData.roleIds)"
             >
               <el-option
                 v-for="item in roleData"
                 :key="item.id"
                 :disabled="item.disabled"
-                :label="item.name"
+                :label="item.roleName"
                 :value="item.id"
               />
             </el-select>
           </el-form-item>
           <el-form-item label="性别：" class="boxPt">
-            <el-radio-group v-model="userData.sex">
-              <el-radio label="1">男</el-radio>
-              <el-radio label="2">女</el-radio>
+            <el-radio-group v-model="userData.gender">
+              <el-radio :label="1">男</el-radio>
+              <el-radio :label="2">女</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="状态：" class="boxPt">
-            <el-radio-group v-model="userData.status">
-              <el-radio :label="true">启用</el-radio>
-              <el-radio :label="false">禁用</el-radio>
-            </el-radio-group>
+          <el-form-item label="工作描述：" prop="describe" class="textInfo">
+            <el-input
+              v-model="userData.workDescribe"
+              type="textarea"
+              resize="none"
+              maxlength="50"
+              @input="descInput"
+            />
+            <span class="numInfo">{{ texNum }}/100</span>
           </el-form-item>
         </el-form>
       </div>
@@ -133,7 +140,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { ElForm } from 'element-ui/types/form'
 import { getUser } from '@/utils/cookies'
 // 表单验证
-import { validateAccounts, validateName, validatePhone } from '@/utils/validate'
+import { validateAccounts, validateName, validateEmail, validatePhone } from '@/utils/validate'
 // 公用组件
 import UploadImage from '@/components/UploadImage/index.vue'
 import SelectTree from '@/components/SelectTree/index.vue'
@@ -163,11 +170,12 @@ export default class extends Vue {
   @Prop() private roleData!: []
   @Prop() private treeData!: {}
   @Prop() private userData!: {}
+  @Prop() private superiorData!: []
   // private firstLoad = true
   private accept: string = 'image/jpeg, image/gif, image/png'
   private imgFileList = []
   private stationData = []
-  private superiorData = []
+  private texNum: number = 0
   private values = ''
   private userIds:any = []
   private imgFileData = {
@@ -185,9 +193,8 @@ export default class extends Vue {
     msg: ''
   }
   private formRules = {
-    account: [
-      { validator: validateAccounts, required: true, trigger: 'blur' }
-    ],
+    account: [{ validator: validateAccounts, required: true, trigger: 'blur' }],
+    email: [{ validator: validateEmail, required: true, trigger: 'blur' }],
     mobile: [{ validator: validatePhone, required: true, trigger: 'blur' }],
     userName: [{ validator: validateName, required: true, trigger: 'blur' }],
     orgId: [{ required: true, message: '请选择组织', trigger: 'change' }],
@@ -223,17 +230,16 @@ export default class extends Vue {
   @Watch('userData')
   getUserInfo(value: any) {
     if (value.roles && value.roles.length > 0) {
-    this.rolesGet(value.roles, this.roleData)
+      this.rolesGet(value.roles, this.roleData)
     }
   }
   @Watch('orgData', { immediate: true })
   getOrg(value: any) {
     this.treeParams.data = value
   }
-
-  created() {
-    this.getStation()
-    this.getSuperiorData()
+  @Watch('userData.orgId', { immediate: true })
+  orgSelect(value: any) {
+    this.loadStation(value)
   }
 
   /// // 功能函数 /////
@@ -242,26 +248,19 @@ export default class extends Vue {
     ;(this.$refs.ruleForm as ElForm).resetFields()
   }
   // 获取岗位
-  private async getStation() {
-    const params = {
-      status: true
+  private async loadStation(orgId: any) {
+    console.log(':' + orgId)
+    if (orgId) {
+      const { data } = await getAllStation({ orgId: orgId, status: true })
+      if (data.isSuccess === true) {
+        this.stationData = data.data.list
+      }
+      (this.userData as any).stationId = ''
     }
-    const { data } = await getAllStation({ status: '' })
-    this.stationData = data.data
-  }
-  // 获取用户列表
-  private async getSuperiorData() {
-    const params = {
-      status: true
-    }
-    const { data } = await getUserList({ })
-    this.superiorData = data.data
   }
   // 重置密码
   handleReset() {
     const ids: any[] = []
-    // const userData: any = getUser()
-    // const data = JSON.parse(userData)
     this.userIds = [(this.userData as any).id]
     this.dialogData.isStatusVisible = true
     this.dialogData.msg = '确认重置该用户的密码吗?'
@@ -292,8 +291,8 @@ export default class extends Vue {
   }
   // 编辑用户
   private async updateSave() {
-    delete (this.userData as any).createTime
-    delete (this.userData as any).updateTime
+    delete (this.userData as any).createdTime
+    delete (this.userData as any).updatedTime
     const { data } = await editUser(this.userData)
     if (data.isSuccess) {
       this.dialog.isVisible = false
@@ -357,7 +356,7 @@ export default class extends Vue {
         if (item === obj.id) {
           objArr = {
             id: obj.id,
-            name: obj.name,
+            name: obj.roleName,
             repel: obj.repel
           }
           dataArr.push(objArr)
@@ -379,14 +378,17 @@ export default class extends Vue {
     })
   }
   clearData() {
-    (this.userData as any).sex = 1
-    ;(this.userData as any).status = true
+    (this.userData as any).gender = 1
     ;(this.userData as any).avatar = ''
-    ;(this.userData as any).password = '123456'
+    ;(this.userData as any).password = '123#456'
   }
   mounted() {
     this.fileOtherData.bizType = this.imgFileData.bizType
     this.fileOtherData.isSingle = true
+  }
+  descInput() {
+    let txtVal = (this.userData as any).workDescribe.length
+    this.texNum = 0 + txtVal
   }
 }
 </script>
