@@ -10,8 +10,9 @@
       :default-active="activeMenu"
       :background-color="variables.menuBg"
       :text-color="variables.menuText"
-      :unique-opened="false"
-      :collapse-transition="false"
+      :unique-opened="true"
+      :active-text-color="variables.menuActiveText"
+      :collapse-transition="true"
       mode="vertical"
       :collapse="isCollapse"
     >

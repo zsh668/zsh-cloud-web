@@ -131,7 +131,9 @@
                 <span> | 角色 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ ellipsis(row.roleNames, 6) }}</span>
+                <el-tooltip :content="row.roleNames" placement="top">
+                  <span>{{ ellipsis(row.roleNames, 6) }}</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
@@ -164,7 +166,7 @@
               <template slot-scope="{ row }">
                 <div class="operation">
                   <el-button v-if="$hasPermission('user:get')" class="inputText" @click="handleView(row.id)">查看</el-button>
-                  <el-dropdown>
+                  <el-dropdown v-if="$hasPermission('user:update') || $hasPermission('user:delete') || $hasPermission('user:reset')">
                     <span class="el-dropdown-link" style="color:#009EFF; font-size:12px">
                       更多<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
@@ -175,7 +177,7 @@
                         修改
                       </el-dropdown-item>
                       <el-dropdown-item v-if="$hasPermission('user:delete')" class="inputText" :disabled="!row.status"
-                                        icon="el-icon-delete" style="color: #E05635;" @click.native="handleDelete(row.id)"
+                                        icon="el-icon-delete" style="color: #E05635;" @click.native="handleDelete(row)"
                       >
                         删除
                       </el-dropdown-item>
@@ -187,7 +189,7 @@
                       <el-dropdown-item v-if="$hasPermission('user:update-role')" class="inputText" :disabled="!row.status"
                                         icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleEditRole(row.id)"
                       >
-                        重置密码
+                        分配角色
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
@@ -451,11 +453,11 @@ export default class extends Vue {
     if (data.isSuccess === true) {
       const objData = data.data.list
       if (objData !== undefined) {
-        // objData.forEach((val: any) => {
-        //   if (val.roleNames !== null) {
-        //     val.roleNames = val.roleNames.join(',')
-        //   }
-        // })
+        objData.forEach((val: any) => {
+          if (val.roleNames !== null) {
+            val.roleNames = val.roleNames.join(',')
+          }
+        })
       }
 
       this.dataTable = data.data
@@ -578,7 +580,7 @@ export default class extends Vue {
   // 单个删除
   handleDelete(row: any) {
     this.ref.table.toggleRowSelection(row, true)
-    this.deleData.name = row.name
+    this.deleData.name = row.userName
     this.dialog.isDeleVisible = true
   }
 

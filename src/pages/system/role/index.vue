@@ -70,7 +70,6 @@
               </template>
               <template slot-scope="{ row }">
                 <div class="operation">
-                  <!-- <span @click="handleEdit(row.id)">修改</span> -->
                   <el-button v-if="$hasPermission('role:update')" class="inputText" :disabled="!row.status" @click.stop="handleEdit(row.id)">修改</el-button>
                   <el-button v-if="$hasPermission('role:delete')" class="inputText delect" :disabled="!row.status" @click.stop="handleDelete(row)">删除</el-button>
                 </div>
@@ -291,7 +290,7 @@ export default class extends Vue {
   }
   // 单个删除
   private handleDelete(row: any) {
-    this.dialog.title = row.name
+    this.dialog.title = row.roleName
     this.roleIds = row.id
     this.dialog.isDeleVisible = true
   }

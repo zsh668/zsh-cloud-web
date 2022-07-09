@@ -329,8 +329,8 @@ export default class extends Vue {
   }
   // 删除
   private async deleteButton() {
-    const ids: any[] = []
-    const { data } = await deleteMenu({ ids: this.roleIds })
+    const ids: any[] = [this.roleIds]
+    const { data } = await deleteMenu({ ids: ids })
     if (data.isSuccess === true) {
       this.$message.success('操作成功')
       this.getMenuList()
@@ -348,27 +348,12 @@ export default class extends Vue {
   }
   // 单个删除
   private handleDelete(row: any) {
-    this.storeData(row.id)
-    this.roleIds.push(row.id)
-    if (row.children && row.children.length > 0) {
-      this.roleIds = this.roleIds.concat(this.deleteData(row.children))
-    }
-
+    this.dialog.title = row.menuName
+    this.roleIds = row.id
     this.dialog.isDeleVisible = true
-  }
-  deleteData(arr:any) {
-    let arrRow = [] as any
-    arr.forEach((element:any) => {
-      this.roleIds.push(element.id)
-      if (element.children) {
-        this.deleteData(element.children)
-      }
-    })
-    return arrRow
   }
   // 修改
   private handleEdit(row: any) {
-    this.storeData(row.id)
     this.dialog.type = 'edit'
     this.dialog.title = '修改'
     this.dialog.isVisible = true
@@ -378,7 +363,6 @@ export default class extends Vue {
   // 启用，禁用
   private async handleState(value: any) {
     this.newData = value
-    this.storeData(value.id)
     this.dialog.isStatusVisible = true
     this.dialog.id = value.id
     this.dialog.status = value.status
@@ -558,11 +542,6 @@ export default class extends Vue {
         arrRes.push(node)
     }
     return arrRes
-  }
-  // 存储数据
-  storeData(id: string) {
-    this.$store.commit('updatedDataTree', this.menuTreeData) // 当前菜单数据存储到数据池
-    this.$store.commit('updatedMenuTreeId', id) // 当前菜单数据存储到数据池
   }
 }
 </script>

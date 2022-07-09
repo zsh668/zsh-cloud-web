@@ -35,9 +35,9 @@ export const detailUserGroup = (id: any) =>
     method: 'get'
   })
 // 删除用户组
-export const delUserGroup = (params: any) =>
+export const delUserGroup = (data: any) =>
   request({
     url: `/system/userGroups`,
     method: 'delete',
-    params
+    data
   })

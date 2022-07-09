@@ -22,23 +22,6 @@
           <el-form-item label="姓名：" prop="userName">
             <el-input v-model="userData.userName" autocomplete="off" minlength="1" maxlength="12" />
           </el-form-item>
-          <!-- <el-form-item label="密码：">
-            <el-tooltip
-              content="用户的默认密码为123#456"
-              class="item"
-              effect="dark"
-              placement="top-start"
-            >
-              <span>123#456</span>
-            </el-tooltip>
-            <el-button
-              v-if="dialog.type === 'edit'"
-              type="primary"
-              @click="handleReset"
-            >
-              重置密码
-            </el-button>
-          </el-form-item> -->
           <el-form-item label="邮箱：" prop="email">
             <el-input v-model="userData.email" autocomplete="off" minlength="5" maxlength="50" />
           </el-form-item>
@@ -249,7 +232,6 @@ export default class extends Vue {
   }
   // 获取岗位
   private async loadStation(orgId: any) {
-    console.log(':' + orgId)
     if (orgId) {
       const { data } = await getAllStation({ orgId: orgId, status: true })
       if (data.isSuccess === true) {

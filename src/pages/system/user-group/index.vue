@@ -39,7 +39,7 @@
         <div class="operationData">
           <el-button v-if="$hasPermission('userGroup:add')" type="primary" @click="handleAdd">用户组添加</el-button>
         </div>
-        <module-tip :data-table="dataTable.list" :list-loading="listLoading"/>
+        <module-tip :data-table="dataTable.list" :list-loading="listLoading" />
         <div>
           <el-table
             ref="table"
@@ -87,7 +87,9 @@
                 <span> | 描述 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ ellipsis(row.describe, 10) }}</span>
+                <el-tooltip :content="row.describe" placement="top">
+                  <span>{{ ellipsis(row.describe, 10) }}</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
@@ -119,24 +121,33 @@
               </template>
               <template slot-scope="{ row }">
                 <div class="operation">
-                  <!-- <span @click="handleView(row.id)">查看</span>
-                  <span @click="handleEdit(row.id)">修改</span>
-                  <span class="delect" @click="handleDelete(row)">删除</span> -->
                   <el-button v-if="$hasPermission('userGroup:get')" class="inputText" :disabled="!row.status"
                              @click="handleView(row.id)"
                   >
                     查看
                   </el-button>
-                  <el-button v-if="$hasPermission('userGroup:update')" class="inputText" :disabled="!row.status"
-                             @click="handleEdit(row.id)"
-                  >
-                    修改
-                  </el-button>
-                  <el-button v-if="$hasPermission('userGroup:delete')" class="inputText delect" :disabled="!row.status"
-                             @click="handleDelete(row)"
-                  >
-                    删除
-                  </el-button>
+                  <el-dropdown v-if="$hasPermission('userGroup:update') || $hasPermission('userGroup:delete') || $hasPermission('userGroup:reset')">
+                    <span class="el-dropdown-link" style="color:#009EFF; font-size:12px">
+                      更多<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item v-if="$hasPermission('userGroup:update')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-edit" style="color: #009EFF;" @click.native="handleEdit(row.id)"
+                      >
+                        修改
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="$hasPermission('userGroup:delete')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-delete" style="color: #E05635;" @click.native="handleDelete(row)"
+                      >
+                        删除
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="$hasPermission('userGroup:reset')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleReset(row.id)"
+                      >
+                        分配用户
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </div>
               </template>
             </el-table-column>
@@ -157,10 +168,7 @@
     <user-add-dialog
       ref="userDialog"
       :dialog="dialog"
-      :org-data="optionData"
       :role-data="roleData"
-      :tree-data="treeData"
-      :get-value="getValue"
       :user-data="editData"
       @close="handleClose"
       @getList="getList"
@@ -240,12 +248,7 @@ export default class extends Vue {
   private delectData = []
   private total = 0
   private roleData: ICommonSelectOptions[] = []
-  private orgData = []
   private deleData = {}
-  private treeData = {
-    treeShow: false,
-    valueId: '' // 初始ID（可选）
-  }
   private searchData = {
     id: '',
     groupName: '',
@@ -283,18 +286,6 @@ export default class extends Vue {
   }
 
   /// // 功能函数 /////
-  get optionData() {
-    let cloneData = JSON.parse(JSON.stringify(this.orgData)) // 对源数据深度克隆
-    return cloneData.filter((father: any) => {
-      // 循环所有项，并添加children属性
-      let branchArr = cloneData.filter(
-        (child: any) => father.id === child.parentId
-      ) // 返回每一项的子级数组
-      // eslint-disable-next-line no-unused-expressions
-      branchArr.length > 0 ? (father.children = branchArr) : '' // 给父级添加一个children属性，并赋值
-      return father.parentId === '0' // 返回第一层
-    })
-  }
 
   // 获取数据
   private async getList() {
@@ -400,12 +391,6 @@ export default class extends Vue {
       this.dialog.msg = `用户"${value.groupName}" 启用！`
       this.dialog.title = '确认启用'
     }
-  }
-
-  // 获取组织树id
-  getValue(value: any) {
-    this.treeData.valueId = value
-    // this.searchData.orgId = value
   }
 
   // 获取删除的数据

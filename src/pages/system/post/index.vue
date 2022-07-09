@@ -66,7 +66,9 @@
                 <span> | 描述 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ row.describe }}</span>
+                <el-tooltip :content="row.describe" placement="top">
+                  <span>{{ ellipsis(row.describe, 10) }}</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
