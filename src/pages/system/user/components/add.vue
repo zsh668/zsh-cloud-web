@@ -80,7 +80,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="角色：" prop="roles">
+          <el-form-item label="角色：" prop="roleIds">
             <el-select
               ref="roles"
               v-model="userData.roleIds"
@@ -105,7 +105,7 @@
               <el-radio :label="2">女</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="工作描述：" prop="describe" class="textInfo">
+          <el-form-item label="工作描述：" prop="workDescribe" class="textInfo">
             <el-input
               v-model="userData.workDescribe"
               type="textarea"
@@ -255,7 +255,6 @@ export default class extends Vue {
       if (data.isSuccess === true) {
         this.stationData = data.data.list
       }
-      (this.userData as any).stationId = ''
     }
   }
   // 重置密码
