@@ -28,11 +28,11 @@ export const detail = (id: any) =>
     method: 'get'
   })
 // 删除
-export const deletes = (params: any) =>
+export const deletes = (data: any) =>
   request({
     url: `/system/orgs`,
     method: 'delete',
-    params
+    data
   })
  // 修改组织状态
 export const editStatus = (id: any) =>
