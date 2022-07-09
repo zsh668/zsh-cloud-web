@@ -2,8 +2,6 @@
 export interface IArticleData {
   account?: string
   avatar?: string
-  createdTime?: string
-  createdBy?: string
   email?: string
   id?: string
   lastLoginTime?: string
@@ -11,20 +9,13 @@ export interface IArticleData {
   userName?: string
   orgId?: string
   orgName?: string
-  password?: string
-  passwordErrorLastTime?: string
-  passwordErrorNum?: number
   passwordExpireTime?: string
   roleNames?: any[]
-  roleIds?: any[]
   gender?: number
   stationId?: number
   superior?: string
   stationName?: string
   status?: boolean
-  updatedTime?: string
-  updatedBy?: string
-  workDescribe?: string
 }
 // 用户翻页
 export interface IManageUserPageListEntity {
