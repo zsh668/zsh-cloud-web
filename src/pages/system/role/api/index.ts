@@ -41,11 +41,11 @@ export const detailRole = (id: any) =>
     method: 'get'
   })
 // 删除角色
-export const deleteRole = (params: any) =>
+export const deleteRole = (data: any) =>
   request({
     url: `/system/roles`,
     method: 'delete',
-    params
+    data
   })
 
 // 获取全部角色

@@ -28,11 +28,11 @@ export const detailMenu = (id: any) =>
     method: 'get'
   })
 // 删除菜单
-export const deleteMenu = (params: any) =>
+export const deleteMenu = (data: any) =>
   request({
     url: `/system/menus`,
     method: 'delete',
-    params
+    data
   })
   // 获取菜单
 export const getAllMenu = (params:any) =>

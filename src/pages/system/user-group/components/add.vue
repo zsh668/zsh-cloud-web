@@ -24,19 +24,6 @@
           />
           <span v-else>{{ userData.groupName }}</span>
         </el-form-item>
-        <el-form-item label="成员：" prop="userIds">
-          <select-tree
-            ref="treeSelect"
-            v-model="values"
-            popover-class="fas"
-            :styles="styles"
-            :select-params="selectParams"
-            :tree-params="treeParams"
-            :user-ids="userData.userIds"
-            :org-data="orgData"
-            @getValue="getValue($event)"
-          />
-        </el-form-item>
         <el-form-item label="角色：" prop="roleId">
           <el-select v-model="userData.roleId" placeholder="请选择">
             <el-option
@@ -95,7 +82,6 @@ export default class extends Vue {
     }
   }
   @Prop() private dialog!: any
-  @Prop() private orgData!: []
   @Prop() private roleData!: []
   @Prop() private treeData!: {}
   @Prop() private userData!: any
@@ -103,10 +89,7 @@ export default class extends Vue {
   private texNum: number = 0
   private formRules = {
     groupName: [{ validator: validateName, required: true, trigger: 'change' }],
-    roleId: [{ required: true, message: '请选择角色', trigger: 'change' }],
-    userIds: [
-      { validator: this.validateUser, required: true, trigger: 'fouse' }
-    ]
+    roleId: [{ required: true, message: '请选择角色', trigger: 'change' }]
   }
   private styles = {
     width: '300px'
@@ -117,28 +100,10 @@ export default class extends Vue {
     clearable: true,
     placeholder: '请选择'
   }
-  private treeParams = {
-    clickParent: false,
-    filterable: true,
-    'check-strictly': false,
-    'default-expand-all': true,
-    'expand-on-click-node': false,
-    data: [],
-    props: {
-      children: 'children',
-      label: 'label',
-      disabled: 'disabled',
-      value: 'id'
-    }
-  }
   // 解决异步数据子组件获取不到数据
   @Watch('userData')
   getUserInfo(value: any) {
     this.userData = value
-  }
-  @Watch('orgData')
-  getOrg(value: any) {
-    this.treeParams.data = value
   }
   /// // 功能函数 /////
   // 添加用户
@@ -159,11 +124,9 @@ export default class extends Vue {
   private async updateSave() {
     const parent = {
       id: this.userData.id,
-      name: this.userData.name, // 用户组名称
-      userIds: this.userData.userIds, // 成员
+      groupName: this.userData.groupName, // 用户组名称
       roleId: this.userData.roleId, // 角色
-      describe: this.userData.describe, // 描述
-      status: this.userData.status
+      describe: this.userData.describe // 描述
     }
     const { data } = await editUserGroup(parent)
     if (data.isSuccess) {
