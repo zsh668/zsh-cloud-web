@@ -59,7 +59,7 @@ export default class extends Vue {
   }
   @Watch('orgdata')
   getOrg(val: any) {
-    if (val !== null && val !== undefined) {
+    if (val !== null && val !== undefined && val.length > 0) {
       this.$nextTick(() => {
         (this.$refs as any).rightsTree.setCheckedKeys(val)
       })

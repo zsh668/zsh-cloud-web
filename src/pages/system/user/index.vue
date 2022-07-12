@@ -74,6 +74,7 @@
             <el-button v-if="$hasPermission('user:delete')" class="f-right" @click="batchDelete(delectData)">
               批量删除
             </el-button>
+            <el-button v-if="$hasPermission('user:export')" type="primary" @click="handleExport">导出用户</el-button>
           </div>
           <module-tip :data-table="dataTable.list" :list-loading="listLoading" />
           <el-table
@@ -306,7 +307,7 @@ import {
   getList,
   delUser,
   detailUser,
-  disableUser, getUserList, resetUser
+  disableUser, getUserList, resetUser, getDownList
 } from '@/pages/system/user/api'
 
 @Component({
@@ -703,6 +704,14 @@ export default class extends Vue {
     this.$nextTick(() => {
       (this.$refs.userDialog as any).init()
     })
+  }
+
+  async handleExport() {
+    this.searchData.export = true
+    await getDownList({ ...this.searchData })
+    setTimeout(() => {
+      this.listLoading = false
+    }, 1)
   }
 
   // 导入

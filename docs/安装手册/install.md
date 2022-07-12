@@ -17,7 +17,7 @@ npm run serve
 ### 构建生产环境 (自带压缩)
 
 ```bash
-npm build
+npm run build
 ```
 
 ### 代码格式检查以及自动修复

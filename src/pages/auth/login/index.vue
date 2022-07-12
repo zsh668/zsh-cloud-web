@@ -135,10 +135,10 @@ export default class extends Vue {
   private imageCode = ''
   private randomId = randomNum(24, 16)
   private loginForm = {
-    account: 'admin',
+    account: '',
     code: '',
     key: '',
-    password: '123#456'
+    password: ''
   }
   private passwordType = 'password'
   private loading = false

@@ -17,13 +17,15 @@
           :class="{ 'submenu-title-noDropdown': isFirstLevel }"
         >
           <span
-            v-if="theOnlyOneChild.meta.icon"
+            v-if="theOnlyOneChild.meta.icon && !theOnlyOneChild.alwaysShow && theOnlyOneChild.level<3"
             class="icon img-icon-sel"
             :class="theOnlyOneChild.meta.icon"
           ></span>
-          <span v-if="theOnlyOneChild.meta.title" slot="title" class="menu-title">{{
-            theOnlyOneChild.meta.title
-          }}</span>
+          <span
+            v-else class="icon img-icon-sell"
+            :class="theOnlyOneChild.meta.icon"
+          ></span>
+          <span v-if="theOnlyOneChild.meta.title" slot="title" class="menu-title">{{ theOnlyOneChild.meta.title }}</span>
         </el-menu-item>
       </sidebar-item-link>
     </template>
@@ -34,9 +36,11 @@
           class="icon img-icon-sel"
           :class="item.meta.icon"
         ></span>
-        <span v-if="item.meta && item.meta.title" slot="title" class="menu-title">{{
-          item.meta.title
-        }}</span>
+        <span v-if="item.meta && item.meta.title" slot="title" class="menu-title"
+              :style="{ 'font-size': (item.level === 2 ? '13px' : '14px') }"
+        >
+          {{ item.meta.title }}
+        </span>
       </template>
       <template v-if="item.children">
         <sidebar-item
@@ -159,8 +163,11 @@ export default class extends Vue {
 
 }
 .is-opened{
-.el-menu--inline{
+  .el-menu--inline{
     .img-icon-sel {
+      display: inline-block;
+    }
+    .img-icon-sell {
       display: none;
     }
   }
@@ -219,7 +226,7 @@ export default class extends Vue {
       background-color: $subMenuHover !important;
       border-left: 4px solid var(--current-color);
       color: inherit !important;
-      padding-left: 46px !important;
+      padding-left: 35px !important;
     }
   }
 }
@@ -248,14 +255,14 @@ export default class extends Vue {
     }
   }
 }
+// 菜单位置样式
 .el-menu {
     li {
       .el-submenu__title{
-            padding-left: 20px !important;
-
-          }
+        padding-left: 20px !important;
+      }
       li{
-        padding-left: 50px !important;
+          padding-left: 20px;
           font-weight: normal;
           .el-submenu__title{
             padding-left: 20px !important;

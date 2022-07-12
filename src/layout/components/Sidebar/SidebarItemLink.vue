@@ -10,7 +10,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { isExternal } from '@/utils/validate'
-import router from '@/router'
 
 @Component({
   name: 'SidebarItemLink'
