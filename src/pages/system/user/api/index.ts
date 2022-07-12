@@ -8,6 +8,15 @@ export const getList = (params: any) =>
     params
   })
 
+// 下载用户
+export const getDownList = (params: any) =>
+  request({
+    url: `/system/users`,
+    method: 'get',
+    params,
+    responseType: 'blob'
+  })
+
 // 根据条件获取用户列表
 export const getUserList = (params: any) =>
   request({
