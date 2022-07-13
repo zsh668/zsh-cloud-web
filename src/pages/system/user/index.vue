@@ -177,7 +177,7 @@
                       >
                         修改
                       </el-dropdown-item>
-                      <el-dropdown-item v-if="$hasPermission('user:delete')" class="inputText" :disabled="!row.status"
+                      <el-dropdown-item v-if="row.id !== '1' && $hasPermission('user:delete')" class="inputText" :disabled="!row.status"
                                         icon="el-icon-delete" style="color: #E05635;" @click.native="handleDelete(row)"
                       >
                         删除
@@ -302,7 +302,7 @@ import {
   IUserFreezeRequest
 } from '@/pages/system/user/interface/types'
 // api
-import { getRepelRole, getAllTree, getAllStation } from '@/api/api'
+import { getRepelRole, getAllTree } from '@/api/api'
 import {
   getList,
   delUser,
@@ -630,7 +630,7 @@ export default class extends Vue {
     const { data } = await resetUser({ ids: this.userIds })
     if (data.isSuccess === true) {
       this.dialogData.isStatusVisible = false
-      this.$message.success('操作成功')
+      this.$message.success('重置密码成功，新密码是：123#456')
     } else {
       // this.$message.error(data.msg)
     }

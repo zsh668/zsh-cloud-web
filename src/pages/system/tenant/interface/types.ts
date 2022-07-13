@@ -1,20 +1,19 @@
-export interface IPostTableData {
+export interface ITenantTableData {
     createdTime?:string
     createdBy?: string
     describe?: string
     id?: number
-    stationName?: string
-    orgId?: number
-    orgName?: string
+    tenantCode?: string
+    tenantName?: string
     status?: boolean
     updatedTime?: string
     updateUser?:number
 }
 
-export interface IPostTable {
+export interface ITenantTable {
     current?: number
     pages?: number
-    list?: IPostTableData[]
+    list?: ITenantTableData[]
     searchCount?: boolean
     size?: number
     total?: number

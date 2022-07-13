@@ -792,3 +792,19 @@ div:focus {
   content: '';
   display: block;
 }
+
+.userBox {
+  .el-dialog {
+    margin-top: 15vh;
+    max-width: calc(659px) !important;
+  }
+  .el-transfer__buttons {
+    display: inline-grid;
+  }
+  .el-input__inner {
+    padding: 0px 32px !important;
+  }
+  .el-button {
+    margin-left: 0px !important;
+  }
+}

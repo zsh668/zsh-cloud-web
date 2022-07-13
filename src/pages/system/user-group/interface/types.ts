@@ -4,7 +4,7 @@ export interface IArticleData {
   createdBy?: string
   describe?: string
   id?: number
-  name?: string
+  groupName?: string
   roleId?: number
   roleName?: string
   status?: boolean

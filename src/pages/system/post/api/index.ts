@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { disableUser } from '@/pages/system/user/api'
 
 // 岗位列表
 export const getPostList = (params: any) =>

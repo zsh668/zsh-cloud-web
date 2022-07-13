@@ -2,7 +2,7 @@
   <el-dialog
     v-if="dialog.isVisible"
     class="user-unfreeze-dialog"
-    :title="dialog.title + '岗位'"
+    :title="dialog.title + '租户'"
     :visible.sync="dialog.isVisible"
     :before-close="handleClose"
   >
@@ -14,27 +14,11 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="岗位编码：" prop="stationCode">
-          <el-input v-model="baseData.stationCode" placeholder="请输入" autocomplete="off" minlength="1" maxlength="12" />
+        <el-form-item label="租户编码：" prop="tenantCode">
+          <el-input v-model="baseData.tenantCode" placeholder="请输入" autocomplete="off" minlength="1" maxlength="12" />
         </el-form-item>
-        <el-form-item label="岗位名称：" prop="stationName">
-          <el-input v-model="baseData.stationName" placeholder="请输入" autocomplete="off" minlength="1" maxlength="12" />
-        </el-form-item>
-        <el-form-item label="组织：" prop="orgId">
-          <select-tree
-            ref="treeSelect"
-            v-model="values"
-            popover-class="fas"
-            :styles="styles"
-            :select-params="selectParams"
-            :tree-params="treeParams"
-            :org-data="orgData"
-            :org-id="baseData.orgId"
-            @getValue="getValue($event)"
-          />
-        </el-form-item>
-        <el-form-item label="排序：" prop="sortValue">
-          <el-input-number v-model="baseData.sortValue" :min="0" />
+        <el-form-item label="租户名称：" prop="tenantName">
+          <el-input v-model="baseData.tenantName" placeholder="请输入" autocomplete="off" minlength="1" maxlength="12" />
         </el-form-item>
         <el-form-item label="描述：" prop="describe" class="textInfo">
           <el-input
@@ -62,52 +46,27 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { ElForm } from 'element-ui/types/form'
-import SelectTree from '@/components/SelectTree/index.vue'
 // api
-import { addPost, editPost, detailPost } from '@/pages/system/post/api'
+import { addTenant, editTenant } from '@/pages/system/tenant/api'
 
 @Component({
   name: 'Dialog',
   components: {
-    SelectTree
   }
 })
 export default class extends Vue {
   @Prop() private dialog!: any
   @Prop() private editData!: {}
-  @Prop() private orgData!: []
-  @Prop() private treeData!: {}
   private baseData= {
-    stationName: '',
-    orgId: '',
-    sortValue: '0',
+    tenantCode: '',
+    tenantName: '',
     describe: ''
   } as any
   private texNum: number = 0
   private isDisable: boolean = false
-  private el: any = this.$refs
   private formRules = {
-    stationName: [{ required: true, message: '请输入岗位名称', trigger: 'blur' }],
-    orgId: [{ required: true, message: '请选择组织', trigger: 'change' }]
-  }
-  private values = ''
-  private styles = {
-    width: '300px'
-  }
-  private selectParams = {
-    clearable: true,
-    placeholder: '请选择'
-  }
-  private treeParams = {
-    clickParent: false,
-    filterable: true,
-    data: [],
-    props: {
-      children: 'children',
-      label: 'orgName',
-      disabled: 'disabled',
-      value: 'id'
-    }
+    tenantCode: [{ required: true, message: '请输入租户编码', trigger: 'blur' }],
+    tenantName: [{ required: true, message: '请输入租户名称', trigger: 'blur' }]
   }
   @Watch('editData')
   getUserData(val:any) {
@@ -115,14 +74,10 @@ export default class extends Vue {
       this.baseData = val
     }
   }
-  @Watch('orgData', { immediate: true })
-  getOrg(value: any) {
-    this.treeParams.data = value
-  }
   // 功能函数
   // 添加用户
   private async addSave() {
-    const { data } = await addPost(this.baseData)
+    const { data } = await addTenant(this.baseData)
     if (data.isSuccess) {
       this.$message({
         message: '操作成功！',
@@ -134,9 +89,7 @@ export default class extends Vue {
   }
   // 编辑用户
   private async updateSave() {
-    delete (this.baseData as any).createdTime
-    delete (this.baseData as any).updatedTime
-    const { data } = await editPost(this.baseData)
+    const { data } = await editTenant(this.baseData)
     if (data.isSuccess) {
       this.$message({
         message: '操作成功！',
@@ -170,10 +123,6 @@ export default class extends Vue {
   private handleClose() {
     (this.$refs.ruleForm as ElForm).resetFields()
     this.$emit('close')
-  }
-  // 获取组织树id
-  getValue(value: string) {
-    (this.baseData as any).orgId = value
   }
   descInput() {
     let txtVal = (this.baseData as any).describe.length

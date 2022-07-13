@@ -1,13 +1,7 @@
 import Vue from 'vue'
 import Router, { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
-import ModuleUser from '@/pages/system/user/router'
-import ModuleUserGroup from '@/pages/system/user-group/router'
-import ModuleMenu from '@/pages/system/menu/router'
-import ModuleOrganization from '@/pages/system/organization/router'
-import ModulePost from '@/pages/system/post/router'
-import ModuleRole from '@/pages/system/role/router'
-import ModuleMonitoring from '@/pages/monitoring'
+
 Vue.use(Router)
 
 export const constantRoutes: RouteConfig[] = [
@@ -268,6 +262,30 @@ export const asyncRoutes: RouteConfig[] = [
           ),
         meta: {
           title: '用户组详情',
+          hidden: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/tenant',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        component: () =>
+          import(/* webpackChunkName: "form" */ '@/pages/system/tenant/index.vue'),
+        meta: {
+          title: '租户管理',
+          icon: 'tenant'
+        }
+      },
+      {
+        path: 'detail/:id',
+        component: () =>
+          import(/* webpackChunkName: "form" */ '@/pages/system/tenant/index.vue'),
+        meta: {
+          title: '租户详情',
           hidden: true
         }
       }

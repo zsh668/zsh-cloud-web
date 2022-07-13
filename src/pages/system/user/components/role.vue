@@ -15,10 +15,10 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="角色：" prop="roles">
+          <el-form-item label="角色：" prop="roleIds">
             <el-select
-              ref="roles"
-              v-model="userData.roles"
+              ref="roleIds"
+              v-model="userData.roleIds"
               multiple
               value-key="id"
               :multiple-limit="limitNumber"
@@ -69,7 +69,7 @@ export default class extends Vue {
   @Prop() private roleData!: []
   @Prop() private userData!: {}
   private formRules = {
-    // roles: [{ validator: this.validateRole, required: true, trigger: 'fouse' }]
+    // roleIds: [{ validator: this.validateRole, required: true, trigger: 'fouse' }]
 
   }
   private styles = {
@@ -86,9 +86,9 @@ export default class extends Vue {
   /// // 功能函数 /////
   // 编辑用户
   private async updateSave() {
-    delete (this.userData as any).createdTime
-    delete (this.userData as any).updatedTime
-    const { data } = await editUserRole(this.userData)
+    const userId = (this.userData as any).id
+    const roleIds = (this.userData as any).roleIds
+    const { data } = await editUserRole({ userId: userId, roleIds: roleIds })
     if (data.isSuccess) {
       this.dialog.isVisible = false
       this.$message({

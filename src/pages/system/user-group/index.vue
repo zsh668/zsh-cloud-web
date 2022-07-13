@@ -141,8 +141,8 @@
                       >
                         删除
                       </el-dropdown-item>
-                      <el-dropdown-item v-if="$hasPermission('userGroup:reset')" class="inputText" :disabled="!row.status"
-                                        icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleReset(row.id)"
+                      <el-dropdown-item v-if="$hasPermission('userGroup:update')" class="inputText" :disabled="!row.status"
+                                        icon="el-icon-user" style="color: #009EFF;" @click.native="handleUser(row.id)"
                       >
                         分配用户
                       </el-dropdown-item>
@@ -196,6 +196,14 @@
       @handle-close="handleCloseStatus"
       @state-submit="handleStateSubmit"
     />
+    <!-- 分配用户 -->
+    <group-user-dialog
+      ref="groupUser"
+      :group-data="groupId"
+      :dialog-visible="groupUserDialog.isVisible"
+      @close="handleGroupUserClose"
+      @success="handleGroupUserSuccess"
+    />
     <!-- end -->
   </div>
 </template>
@@ -212,6 +220,8 @@ import BaseDialog from '@/components/BaseStatus/index.vue'
 import Delete from './components/delete.vue'
 // 添加
 import UserAddDialog from './components/add.vue'
+// 添加
+import GroupUserDialog from './components/user.vue'
 // 详情
 import UserDetailDialog from './components/detail.vue'
 import ModuleTip from '@/components/ModuleTip/index.vue'
@@ -227,8 +237,7 @@ import {
   detailUserGroup,
   disableUserGroup
 } from '@/pages/system/user-group/api'
-import { getRepelRole, getTree } from '@/api/api'
-// import { getRole, getTree } from '@/api/api'
+import { getRepelRole } from '@/api/api'
 @Component({
   name: 'userGroupList',
   components: {
@@ -236,6 +245,7 @@ import { getRepelRole, getTree } from '@/api/api'
     Delete,
     UserAddDialog,
     UserDetailDialog,
+    GroupUserDialog,
     BaseDialog,
     ModuleTip
   }
@@ -279,6 +289,10 @@ export default class extends Vue {
   } as any
   private ivewData: IUserFreezeRequest = {}
 
+  private groupId = ''
+  private groupUserDialog = {
+    isVisible: false
+  }
   /// 生命周期
   created() {
     this.getList()
@@ -346,6 +360,12 @@ export default class extends Vue {
     table.toggleRowSelection(row, true)
     this.deleData = row
     this.dialog.isDeleVisible = true
+  }
+
+  // 分配用户
+  private handleUser(id: string) {
+    this.groupUserDialog.isVisible = true
+    this.groupId = id
   }
 
   // 获取详情
@@ -441,6 +461,15 @@ export default class extends Vue {
   // 内容控制字数，多出的用省略号
   ellipsis(value: any, num: any) {
     return ellipsis(value, num)
+  }
+
+  // 关闭用户添加、编辑弹层
+  handleGroupUserClose() {
+    this.groupUserDialog.isVisible = false
+  }
+
+  handleGroupUserSuccess() {
+
   }
 }
 </script>

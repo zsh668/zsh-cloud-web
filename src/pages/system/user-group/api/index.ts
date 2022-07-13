@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { disablePost } from '@/pages/system/post/api'
 
 // 用户组管理
 export const getUserGroupList = (params: any) =>
@@ -39,5 +38,12 @@ export const delUserGroup = (data: any) =>
   request({
     url: `/system/userGroups`,
     method: 'delete',
+    data
+  })
+// 分配用户
+export const addGroupUser = (data: any) =>
+  request({
+    url: `/system/userGroups/user`,
+    method: 'put',
     data
   })
