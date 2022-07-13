@@ -7,10 +7,10 @@ export interface MenuTableData {
   group?: string
   icon?: string
   id?: number
-  isEnable?: boolean
+  status?: boolean
   isPublic?: boolean
   label?: string
-  name?: string
+  menuName?: string
   path?: string
   sortValue?: number
   updatedTime?: string

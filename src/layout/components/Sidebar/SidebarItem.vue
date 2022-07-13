@@ -226,7 +226,7 @@ export default class extends Vue {
       background-color: $subMenuHover !important;
       border-left: 4px solid var(--current-color);
       color: inherit !important;
-      padding-left: 35px !important;
+      // padding-left: 35px !important;
     }
   }
 }
