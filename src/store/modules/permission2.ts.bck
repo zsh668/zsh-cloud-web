@@ -1,7 +1,6 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
 import { RouteConfig } from 'vue-router'
 import { asyncRoutes, constantRoutes } from '@/router'
-import Layout from '@/layout/index.vue'
 import store from '@/store'
 
 const hasPermission = (roles: string[], route: any) => {
@@ -44,35 +43,14 @@ class Permission extends VuexModule implements IPermissionState {
 
   @Action
   public GenerateRoutes(roles: string[]) {
-    const routes = getRouters(roles, layzLoading)
-    asyncRoutes.forEach(route => routes.push(route))
     let accessedRoutes
     if (roles.includes('admin')) {
-      accessedRoutes = routes
+      accessedRoutes = asyncRoutes
     } else {
-      accessedRoutes = filterAsyncRoutes(routes, roles)
+      accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
     }
     this.SET_ROUTES(accessedRoutes)
   }
 }
-
-export const getRouters = (menu = [] as any, layzLoading: Function): any[] => {
-  return menu.filter((route: any) => {
-    const component = route.component
-    if (component) {
-      if (route.component === 'Layout') {
-        route.component = Layout
-      } else {
-        route.component = layzLoading(route.component)
-      }
-      if (route.children && route.children.length) {
-        route.children = getRouters(route.children, layzLoading)
-      }
-      return true
-    }
-  })
-}
-
-export const layzLoading = (path: string) => () => import(`@/pages/${path.replace(/^\/?/, '')}.vue`)
 
 export const PermissionModule = getModule(Permission)
