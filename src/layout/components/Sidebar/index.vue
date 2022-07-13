@@ -32,7 +32,7 @@ import { AppModule } from '@/store/modules/app'
 import SidebarItem from './SidebarItem.vue'
 import variables from '@/styles/_variables.scss'
 import { UserModule } from '@/store/modules/user'
-import { asyncRoutes } from '@/router'
+import { PermissionModule } from '@/store/modules/permission'
 @Component({
   name: 'SideBar',
   components: {
@@ -45,8 +45,8 @@ export default class extends Vue {
   }
 
   get routes() {
-    this.filterIcon(asyncRoutes, UserModule.roles)
-      return UserModule.roles
+    this.filterIcon(PermissionModule.dynamicRoutes, UserModule.roles)
+    return UserModule.roles
   }
 
   get variables() {
