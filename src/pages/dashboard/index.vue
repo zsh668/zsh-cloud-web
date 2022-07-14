@@ -21,8 +21,8 @@
         <div class="titIcon">技术亮点</div>
         <div class="lightInfo">
           <ul>
-            <li><span></span>系统基于SpringCloud(Hoxton.SR3)  +SpringBoot(2.2.5.RELEASE) 的微服务框架，具备通用的用户管理、资源权限管理、网关统一鉴权、XSS防跨站攻击等多个模块，支持多业务系统、多服务并行开发，可以作为后端服务的开发脚手架；</li>
-            <li><span></span>核心技术采用SpringBoot、Zuul、Nacos、Fegin、Ribbon、Hystrix、JWT Token、Mybatis Plus等主要框架和中间件；</li>
+            <li><span></span>系统基于SpringCloud(2021.0.3) + SpringBoot(2.6.9) 的微服务框架，具备通用的用户管理、资源权限管理、网关统一鉴权、XSS防跨站攻击等多个模块，支持多业务系统、多服务并行开发，可以作为后端服务的开发脚手架；</li>
+            <li><span></span>核心技术采用SpringBoot、Nacos、Dubbo、Oauth2、Mybatis Plus等主要框架和中间件；</li>
             <li>
               <span></span>采用mysql数据库进行数据持久化，使用redis缓存技术优化系统性能；
             </li>
@@ -37,7 +37,7 @@
         <div class="titIcon">使用说明</div>
         <div class="explain">
           <p>
-            本项目使用Nacos集成注册中心和配置中心功能合二为一，Nacos是阿里巴巴开源的一款支持服务注册、发现、配置管理以及微服务管理的组件，用来取代以前常用的注册中心（zookeeper , eureka等），以及配置中心（spring cloud config等）。搭建好Nacos后导入配置信息，即可编译启动权限系统，具体使用方法参考"权限管家操作手册"。
+            本项目使用Nacos集成注册中心和配置中心功能合二为一，Nacos是阿里巴巴开源的一款支持服务注册、发现、配置管理以及微服务管理的组件，用来取代以前常用的注册中心（zookeeper , eureka等），以及配置中心（spring cloud config等）。
           </p>
         </div>
       </div>
