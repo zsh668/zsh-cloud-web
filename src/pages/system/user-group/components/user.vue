@@ -121,7 +121,7 @@ export default {
         })
         .catch(() => {
           this.$message({
-            message: this.$t('tips.getDataFail'),
+            message: '获取数据失败',
             type: 'error'
           })
         })

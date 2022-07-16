@@ -17,51 +17,11 @@
           {{ user.userName }}<i class="el-icon-caret-bottom el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="topNav">
-          <el-dropdown-item command="0">修改密码</el-dropdown-item>
+          <el-dropdown-item command="0">个人中心</el-dropdown-item>
           <el-dropdown-item command="1">退出系统</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog
-      class="user-unfreeze-dialog userInfo"
-      title="修改密码"
-      :visible.sync="isVisible"
-      :before-close="handleClose"
-    >
-      <div class="unfreeze-form">
-        <el-form
-          ref="ruleForm"
-          :rules="formRules"
-          :model="userData"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="旧密码：" prop="password">
-            <el-input v-model="userData.password" type="password" placeholder="请输入" autocomplete="off" minlength="6" maxlength="12" />
-          </el-form-item>
-          <el-form-item label="新密码：" prop="newPassword">
-            <el-input v-model="userData.newPassword" type="password" placeholder="请输入" autocomplete="off" minlength="6" maxlength="12" />
-          </el-form-item>
-          <el-form-item label="确认密码：" prop="confirmPassword">
-            <el-input v-model="userData.confirmPassword" type="password" placeholder="请输入" autocomplete="off" minlength="6" maxlength="12" />
-          </el-form-item>
-        </el-form>
-        <div class="subBox right">
-          <el-button @click="handleClose"> 取 消 </el-button>
-          <el-button type="primary" :disabled="isDisable" :loading="isDisable" @click="handleSubmit">
-            确 定
-          </el-button>
-        </div>
-      </div>
-    </el-dialog>
-    <!-- 用户添加、编辑对话框 -->
-    <more-dialog
-      v-if="isMoreVisible"
-      ref="userDialog"
-      :is-more-visible="isMoreVisible"
-      @close="handleMoreClose"
-    />
-    <!-- end -->
   </div>
 </template>
 
@@ -84,18 +44,8 @@ import moreDialog from '@/pages/system/adhibition/components/moreList.vue'
   }
 })
 export default class extends Vue {
-  private userData={}
-  private isVisible =false
-  private isDisable = false
-  private userInfo = {}
-  private dataTable =[]
-  private isMoreVisible= false
   private chalk = ''
   private version = require('element-ui/package.json').version
-  private formRules = {
-    password: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
-    newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }]
-  }
   get sidebar() {
     return AppModule.sidebar
   }
@@ -136,53 +86,9 @@ export default class extends Vue {
           this.$router.replace('/login')
         })
     } else if (command === '0') {
-      this.isVisible = true
+      // this.isVisible = true
+      this.$router.push('/profile')
     }
-  }
-  // 修改密码
-  handleSubmit() {
-    this.isDisable = true
-    let userData = this.userData as any
-    // setTimeout(() => {
-    //   this.isDisable = false // 点击一次时隔两秒后才能再次点击
-    // }, 2000)
-    userData.id = this.user.id
-    if (userData.confirmPassword !== userData.newPassword) {
-      this.$message({
-        message: '两次密码不一致',
-        type: 'error'
-      })
-      return false
-    }
-    (this.$refs.ruleForm as ElForm).validate(async(valid: boolean) => {
-      if (valid) {
-        const { data } = await alterPassword(this.userData)
-        this.isDisable = false
-        if (data.isSuccess) {
-          this.isVisible = false;
-          (this.$refs.ruleForm as ElForm).resetFields()
-          this.$message({
-            message: '设置成功！',
-            type: 'success'
-          })
-          this.handleClose()
-        } else {
-          this.$message({
-            message: data.msg,
-            type: 'error'
-          })
-        }
-      } else {
-        return false
-      }
-    })
-  }
-  handleClose() {
-    this.isVisible = false
-    ;(this.$refs.ruleForm as ElForm).resetFields()
-  }
-  handleMoreClose() {
-    this.isMoreVisible = false
   }
 
   // 变更主题色

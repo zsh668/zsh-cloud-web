@@ -64,6 +64,13 @@ export const delUser = (data: any) =>
     method: 'delete',
     data
   })
+// 修改密码
+export const changePassword = (data: any) =>
+  request({
+    url: `/system/users/password`,
+    method: 'put',
+    data
+  })
 // 重置密码
 export const resetUser = (data: any) =>
   request({
@@ -77,4 +84,12 @@ export const userHierarchy = (id: any) =>
   request({
     url: `/system/users/hierarchy/${id}`,
     method: 'get'
+  })
+
+// 获取用户关系
+export const editAvatar = (data: any) =>
+  request({
+    url: `/system/users/avatar`,
+    method: 'PUT',
+    data
   })

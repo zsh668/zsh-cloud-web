@@ -121,7 +121,6 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { ElForm } from 'element-ui/types/form'
-import { getUser } from '@/utils/cookies'
 // 表单验证
 import { validateAccounts, validateName, validateEmail, validatePhone } from '@/utils/validate'
 // 公用组件
@@ -130,7 +129,7 @@ import SelectTree from '@/components/SelectTree/index.vue'
 import BaseDialog from '@/components/BaseStatus/index.vue'
 // api
 import { getAllStation } from '@/api/api'
-import { addUser, editUser, resetUser, getUserList } from '@/pages/system/user/api'
+import { addUser, editUser, resetUser } from '@/pages/system/user/api'
 @Component({
   name: 'UserAddDialog',
   components: {

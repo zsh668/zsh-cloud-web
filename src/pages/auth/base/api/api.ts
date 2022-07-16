@@ -35,7 +35,7 @@ export const alterPassword = (data: any) =>
 // 登录日志
 export const loginInfo = (data: any) =>
   request({
-    url: 'auth/loginLog/login/' +
+    url: 'system/loginLogs/login/' +
       `${data.name}?` +
       '&' +
       `description=${data.description}`,

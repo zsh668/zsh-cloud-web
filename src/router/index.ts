@@ -23,7 +23,7 @@ export const constantRoutes: RouteConfig[] = [
         component: () =>
           import(
             /* webpackChunkName: "dashboard" */ '@/pages/dashboard/index.vue'
-          ),
+            ),
         meta: {
           title: '首页',
           icon: 'dashboard'
@@ -51,6 +51,23 @@ export const constantRoutes: RouteConfig[] = [
   }
 ]
 export const asyncRoutes: RouteConfig[] = [
+  {
+    path: '/profile',
+    component: Layout,
+    // component: () => import(/* webpackChunkName: "404" */ '@/pages/base/pages/error/404.vue'),
+    children: [
+      {
+        path: '',
+        component: () =>
+          import(/* webpackChunkName: "dashboard" */ '@/pages/profile/index.vue'),
+        meta: {
+          title: '个人中心',
+          icon: 'profile'
+        }
+      }
+    ],
+    meta: { hidden: true }
+  },
   {
     path: '/404',
     component: Layout,
@@ -87,8 +104,15 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location: any) {
+  // @ts-ignore
+  return originalPush.call(this, location).catch((err: any) => err)
+}
+
 export function resetRouter() {
   const newRouter = createRouter();
   (router as any).matcher = (newRouter as any).matcher // reset router
 }
+
 export default router

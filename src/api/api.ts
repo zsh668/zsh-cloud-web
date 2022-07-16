@@ -38,7 +38,6 @@ export const getRole = (data: any) =>
 // 角色
 export const getRepelRole = (params: any) =>
   request({
-    // url: `/authority/role`,/authority/role/page
     url: `/system/roles`,
     method: 'get',
     params
@@ -50,13 +49,6 @@ export const getAllTree = (params: any) =>
     method: 'get',
     params
   })
-  // 人员
-export const getTree = (data: any) =>
-request({
-  url: `/system/userGroups/orgUserTree`,
-  method: 'get',
-  data
-})
 // 岗位
 export const getAllStation = (params: any) =>
   request({
@@ -70,4 +62,12 @@ export const getAllStation = (params: any) =>
   request({
     url: `/system/users/current`,
     method: 'get'
+  })
+
+ // 修改个人信息
+ export const editUserInfo = (data: any) =>
+  request({
+    url: `/system/users/current`,
+    method: 'put',
+    data
   })

@@ -762,7 +762,7 @@ export default class extends Vue {
   display: flex;
 
   .org-box {
-    width: 25%;
+    width: 20%;
     padding: 25px 20px;
     position: relative;
 
@@ -782,13 +782,10 @@ export default class extends Vue {
       margin-bottom: 20px;
     }
 
-    .head-container {
-      overflow-x: auto;
-    }
   }
 
   .tabCon {
-    width: calc(75% - 20px);
+    width: calc(80% - 20px);
     margin-left: 20px;
   }
 
@@ -800,13 +797,13 @@ export default class extends Vue {
     }
 
     .searchBtn {
-      width: 200px;
+      width: 300px;
     }
   }
 
   ::v-deep .customer-tree-box {
     padding: 0 10px;
-    min-width: 340px;
+    min-width: 200px;
 
     .el-icon-caret-right:before {
       content: '';
