@@ -19,7 +19,6 @@ body {
 }
 ul,
 li,
-p,
 h1,
 h2 {
   margin: 0;
@@ -807,4 +806,9 @@ div:focus {
   .el-button {
     margin-left: 0px !important;
   }
+}
+.app-container {
+  // padding: 20px;
+  margin: 10px;
+  background: #f8f8f8;
 }
