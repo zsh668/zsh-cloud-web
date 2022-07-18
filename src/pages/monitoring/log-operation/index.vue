@@ -179,6 +179,16 @@
                 <span>{{ uaForamt(row.ua) }}</span>
               </template>
             </el-table-column>
+            <el-table-column align="center" width="160">
+              <template slot="header">
+                <span> | 操作 </span>
+              </template>
+              <template slot-scope="{ row }">
+                <div class="operation">
+                  <el-button v-if="$hasPermission('optLog:get')" class="inputText" @click="handleView(row.id)">查看</el-button>
+                </div>
+              </template>
+            </el-table-column>
           </el-table>
           <!-- 分页 -->
           <pagination
@@ -191,6 +201,13 @@
           <!-- end -->
         </div>
         <module-tip :data-table="dataTable" :list-loading="listLoading" />
+        <!-- 用户查看对话框 -->
+        <detail-dialog
+          ref="viewDialog"
+          :edit-data="ivewData"
+          :dialog="dialog"
+        />
+        <!-- end -->
       </div>
     </div>
   </div>
@@ -207,13 +224,16 @@ import {
 // 组件
 import Pagination from '@/components/Pagination/index.vue'
 import ModuleTip from '@/components/ModuleTip/index.vue'
+// 详情查看
+import DetailDialog from './detail.vue'
 // api
-import { getOperationList } from '@/pages/monitoring/api'
+import { detailOperation, getOperationList } from '@/pages/monitoring/api'
 @Component({
-  name: 'loginList',
+  name: 'operationList',
   components: {
     Pagination,
-    ModuleTip
+    ModuleTip,
+    DetailDialog
   }
 })
 export default class extends Vue {
@@ -232,6 +252,16 @@ export default class extends Vue {
     size: 10,
     current: 1
   } as any
+  private dialog = {
+    id: '',
+    msg: '',
+    isVisible: false,
+    isViewVisible: false,
+    isStatusVisible: false,
+    type: 'disable',
+    title: ''
+  }
+  private ivewData = {}
   private pages={
     size: 10,
     current: 1
@@ -329,6 +359,12 @@ export default class extends Vue {
       this.searchData.httpMethod = null
     }
     this.getList()
+  }
+  // 查看
+  private async handleView(id: string) {
+    this.dialog.isViewVisible = true
+    const { data } = await detailOperation(id)
+    this.ivewData = data.data
   }
   // 内容控制字数，多出的用省略号
   ellipsis(value: any, num: any) {
