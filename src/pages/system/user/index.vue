@@ -70,11 +70,14 @@
           </div>
           <div class="operationData">
             <el-button v-if="$hasPermission('user:add')" type="primary" @click="handleAdd">添加用户</el-button>
+            <el-button v-if="$hasPermission('user:export')" type="primary" @click="handleExport">导出用户</el-button>
+            <el-button v-if="$hasPermission('user:template-file')" type="f-right" @click="handleTemplate">
+              下载模板
+            </el-button>
             <el-button v-if="$hasPermission('user:import')" type="primary" @click="handleImport">导入用户</el-button>
             <el-button v-if="$hasPermission('user:delete')" class="f-right" @click="batchDelete(delectData)">
               批量删除
             </el-button>
-            <el-button v-if="$hasPermission('user:export')" type="primary" @click="handleExport">导出用户</el-button>
           </div>
           <module-tip :data-table="dataTable.list" :list-loading="listLoading" />
           <el-table
@@ -166,8 +169,12 @@
               </template>
               <template slot-scope="{ row }">
                 <div class="operation">
-                  <el-button v-if="$hasPermission('user:get')" class="inputText" @click="handleView(row.id)">查看</el-button>
-                  <el-dropdown v-if="$hasPermission('user:update') || $hasPermission('user:delete') || $hasPermission('user:reset')">
+                  <el-button v-if="$hasPermission('user:get')" class="inputText" @click="handleView(row.id)">
+                    查看
+                  </el-button>
+                  <el-dropdown
+                    v-if="$hasPermission('user:update') || $hasPermission('user:delete') || $hasPermission('user:reset')"
+                  >
                     <span class="el-dropdown-link" style="color:#009EFF; font-size:12px">
                       更多<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
@@ -177,18 +184,22 @@
                       >
                         修改
                       </el-dropdown-item>
-                      <el-dropdown-item v-if="row.id !== '1' && $hasPermission('user:delete')" class="inputText" :disabled="!row.status"
+                      <el-dropdown-item v-if="row.id !== '1' && $hasPermission('user:delete')" class="inputText"
+                                        :disabled="!row.status"
                                         icon="el-icon-delete" style="color: #E05635;" @click.native="handleDelete(row)"
                       >
                         删除
                       </el-dropdown-item>
                       <el-dropdown-item v-if="$hasPermission('user:reset')" class="inputText" :disabled="!row.status"
-                                        icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleReset(row.id)"
+                                        icon="el-icon-refresh" style="color: #009EFF;"
+                                        @click.native="handleReset(row.id)"
                       >
                         重置密码
                       </el-dropdown-item>
-                      <el-dropdown-item v-if="$hasPermission('user:update-role')" class="inputText" :disabled="!row.status"
-                                        icon="el-icon-refresh" style="color: #009EFF;" @click.native="handleEditRole(row.id)"
+                      <el-dropdown-item v-if="$hasPermission('user:update-role')" class="inputText"
+                                        :disabled="!row.status"
+                                        icon="el-icon-refresh" style="color: #009EFF;"
+                                        @click.native="handleEditRole(row.id)"
                       >
                         分配角色
                       </el-dropdown-item>
@@ -307,8 +318,9 @@ import {
   getList,
   delUser,
   detailUser,
-  disableUser, getUserList, resetUser, getDownList
+  disableUser, getUserList, resetUser, getDownList, downTemplateFile
 } from '@/pages/system/user/api'
+import download from '@/utils/download'
 
 @Component({
   name: 'UserList',
@@ -389,7 +401,7 @@ export default class extends Vue {
     isStatusVisible: false,
     msg: ''
   }
-  private userIds:any = []
+  private userIds: any = []
   private ivewData = {}
   private treeParams = {
     clickParent: false,
@@ -618,12 +630,14 @@ export default class extends Vue {
     this.roleDialog.isVisible = true
     this.getEdit(id)
   }
+
   // 重置密码
   handleReset(id: string) {
     this.dialogData.id = id
     this.dialogData.isStatusVisible = true
     this.dialogData.msg = '确认重置该用户的密码吗?'
   }
+
   // 重置密码提交
   private async handleResetSubmit() {
     this.userIds = [(this.dialogData as any).id]
@@ -706,9 +720,15 @@ export default class extends Vue {
     })
   }
 
+  async handleTemplate() {
+    const res = await downTemplateFile()
+    download.excel(res, '用户导入模板.xlsx')
+  }
+
   async handleExport() {
     this.searchData.export = true
-    await getDownList({ ...this.searchData })
+    const res = await getDownList({ ...this.searchData })
+    download.excel(res, '用户列表.xls')
     setTimeout(() => {
       this.listLoading = false
     }, 1)
@@ -818,6 +838,7 @@ export default class extends Vue {
       // white-space: nowrap;
       // text-overflow: ellipsis;
     }
+
     .el-tree-node__content {
       height: 32px !important;
 

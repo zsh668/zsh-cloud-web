@@ -10,7 +10,8 @@
         <!-- 上传组件按钮 -->
         <el-upload
           class="upload-demo upload-text"
-          :action="'api/authority/user/importExcel?token='+myheader"
+          :action="'api/system/users/importExcel'"
+          :headers="myheader"
           :before-upload="beforeUpload"
           :on-error="uploadFail"
           multiple
@@ -26,8 +27,8 @@
           >
             {{ uploadTip }}
           </el-button>
-          <span class="pointer" @click="handelDownload">未选择任何文件<span class="colFont">下载模板</span>
-          <!-- <span class="colFontTip">(仅支持Excel)</span> -->
+          <span class="pointer">
+            <span class="colFontTip">(仅支持Excel)</span>
           </span>
         </el-upload>
         <!-- 上传文件名列表 -->
@@ -85,14 +86,12 @@ export default class extends Vue {
   private failIndex = 0
   el: any = this.$refs
   get myheader() {
-    return getToken()
+    return {
+      'Authorization': 'Bearer ' + getToken()
+    }
   }
 
   // 业务方法
-  // 下载模板
-  handelDownload() {
-    window.location.href = '../../template/template.xlsx'
-  }
   // 文件上传完成
   typeTip(obj: any) {
     this.$message.error(obj)
