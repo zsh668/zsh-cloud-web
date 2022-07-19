@@ -93,3 +93,11 @@ export const editAvatar = (data: any) =>
     method: 'PUT',
     data
   })
+
+// 下载模板
+export const downTemplateFile = () =>
+  request({
+    url: `/system/users/importTemplateFile`,
+    method: 'get',
+    responseType: 'blob'
+  })
