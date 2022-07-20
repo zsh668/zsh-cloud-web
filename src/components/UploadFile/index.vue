@@ -2,7 +2,7 @@
   <div>
     <el-dialog
       class="user-unfreeze-dialog exporUser"
-      title="导入用户"
+      :title="dialog.title"
       :visible="dialog.isFileVisible"
       :before-close="handleClose"
     >
@@ -10,7 +10,7 @@
         <!-- 上传组件按钮 -->
         <el-upload
           class="upload-demo upload-text"
-          :action="'api/system/users/importExcel'"
+          :action="dialog.importUrl"
           :headers="myheader"
           :before-upload="beforeUpload"
           :on-error="uploadFail"
