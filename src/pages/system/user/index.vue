@@ -70,11 +70,11 @@
           </div>
           <div class="operationData">
             <el-button v-if="$hasPermission('user:add')" type="primary" @click="handleAdd">添加用户</el-button>
+            <el-button v-if="$hasPermission('user:import')" type="primary" @click="handleImport">导入用户</el-button>
             <el-button v-if="$hasPermission('user:export')" type="primary" @click="handleExport">导出用户</el-button>
-            <el-button v-if="$hasPermission('user:template-file')" type="f-right" @click="handleTemplate">
+            <el-button v-if="$hasPermission('user:import')" type="f-right" @click="handleTemplate">
               下载模板
             </el-button>
-            <el-button v-if="$hasPermission('user:import')" type="primary" @click="handleImport">导入用户</el-button>
             <el-button v-if="$hasPermission('user:delete')" class="f-right" @click="batchDelete(delectData)">
               批量删除
             </el-button>
@@ -729,7 +729,7 @@ export default class extends Vue {
   async handleExport() {
     this.searchData.export = true
     const res = await getDownList({ ...this.searchData })
-    download.excel(res, '用户列表.xls')
+    download.excel(res, '用户列表.xlsx')
     setTimeout(() => {
       this.listLoading = false
     }, 1)

@@ -220,6 +220,7 @@ export default class extends Vue {
     status: false
   } as any
   private baseData= {
+    stationCode: '',
     stationName: '',
     orgId: '',
     describe: ''

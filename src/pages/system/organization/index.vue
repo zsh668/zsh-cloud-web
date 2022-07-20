@@ -314,7 +314,7 @@ export default class extends Vue {
   }
   // 删除
   private async deleteButton() {
-    const ids = [this.deleData.id]
+    const ids: any[] = [this.deleData.id]
     const { data } = await deletes({ ids: ids })
     if (data.isSuccess === true) {
       if (data.data.length > 0) {

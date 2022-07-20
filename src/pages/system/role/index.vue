@@ -262,7 +262,7 @@ export default class extends Vue {
   }
   // 删除
   private async deleteButton() {
-    const ids = [this.roleIds]
+    const ids: any[] = [this.roleIds]
     const { data } = await deleteRole({ ids: ids })
     if (data.isSuccess === true) {
       if (data.data.length > 0) {
