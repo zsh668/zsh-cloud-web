@@ -78,6 +78,7 @@ export default class extends Vue {
   @Prop() private orgData!: []
   @Prop() private treeData!: {}
   private baseData= {
+    stationCode: '',
     stationName: '',
     orgId: '',
     sortValue: '0',
@@ -87,6 +88,7 @@ export default class extends Vue {
   private isDisable: boolean = false
   private el: any = this.$refs
   private formRules = {
+    stationCode: [{ required: true, message: '请输入岗位编号', trigger: 'blur' }],
     stationName: [{ required: true, message: '请输入岗位名称', trigger: 'blur' }],
     orgId: [{ required: true, message: '请选择组织', trigger: 'change' }]
   }

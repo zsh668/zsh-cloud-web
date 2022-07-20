@@ -170,7 +170,7 @@ export default class extends Vue {
   }
   // 删除
   private async deleteButton() {
-    const ids = [this.deleData.id]
+    const ids: any[] = [this.deleData.id]
     const { data } = await deleteJurisdiction({ ids: ids })
     if (data.isSuccess === true) {
       this.$message.success('操作成功！')
