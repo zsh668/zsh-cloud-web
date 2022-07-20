@@ -370,7 +370,8 @@ export default class extends Vue {
     isStatusVisible: false,
     type: 'disable',
     status: false,
-    title: ''
+    title: '',
+    importUrl: ''
   }
   private roleDialog = {
     id: '',
@@ -736,7 +737,9 @@ export default class extends Vue {
 
   // 导入
   handleImport() {
+    this.dialog.title = '导入用户'
     this.dialog.isFileVisible = true
+    this.dialog.importUrl = 'api/system/users/importExcel'
   }
 
   // 内容控制字数，多出的用省略号
