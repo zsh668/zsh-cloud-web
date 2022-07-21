@@ -1,9 +1,17 @@
 import request from '@/utils/request'
 
+// 租户管理
+export const getList = (params: any) =>
+  request({
+    url: `/system/tenants`,
+    method: 'get',
+    params
+  })
+
 // 租户列表
 export const getTenantList = (params: any) =>
   request({
-    url: `/system/tenants`,
+    url: `/system/tenants/list`,
     method: 'get',
     params
   })

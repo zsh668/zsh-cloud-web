@@ -27,8 +27,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { getToken } from '@/utils/cookies'
-import { getAttachment } from '@/api/api'
-import { Console } from 'console'
 @Component({
   name: 'UploadImage'
 })

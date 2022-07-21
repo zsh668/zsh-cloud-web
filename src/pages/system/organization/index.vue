@@ -136,7 +136,7 @@ import BaseDialog from '@/components/BaseStatus/index.vue'
 // 添加
 import UserAddDialog from './components/add.vue'
 // api
-import { getRole, getAllTree } from '@/api/api'
+import { getAllTree } from '@/api/api'
 import {
   deletes,
   move,

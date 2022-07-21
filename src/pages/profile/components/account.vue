@@ -33,7 +33,6 @@
 
 <script>
 import { validatePhone } from '@/utils/validate'
-import { editUserInfo } from '@/api/api'
 
 export default {
   components: { },
@@ -67,7 +66,7 @@ export default {
   },
   methods: {
     getUserInfo() {
-          this.userInfo = this.user
+       this.userInfo = this.user
     },
     submit() {
       this.$refs.form.validate(valid => {
@@ -79,7 +78,7 @@ export default {
             gender: this.userInfo.gender,
             workDescribe: this.userInfo.workDescribe
           }
-          editUserInfo({ ...temp }).then(response => {
+          this.editUserInfo({ ...temp }).then(response => {
             const res = response.data
             if (res.isSuccess) {
               this.$message({

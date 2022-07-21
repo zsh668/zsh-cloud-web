@@ -146,9 +146,8 @@ import ModuleTip from '@/components/ModuleTip/index.vue'
 import BaseDialog from '@/components/BaseStatus/index.vue'
 import Jurisdiction from './components/jurisdiction.vue'
 // interface接口
-import { MenuTableData, PageListEntity } from '@/pages/system/menu/interface/types'
+import { MenuTableData } from '@/pages/system/menu/interface/types'
 // api
-import { getRole, getAllTree } from '@/api/api'
 import {
   getmenuList,
   getAllMenu,
