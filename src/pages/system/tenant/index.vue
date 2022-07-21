@@ -159,7 +159,7 @@ import BaseDialog from '@/components/BaseStatus/index.vue'
 // 添加
 import AddDialog from './components/add.vue'
 // api
-import { getTenantList, deleteTenant, disableTenant, detailTenant } from '@/pages/system/tenant/api'
+import { getList, deleteTenant, disableTenant, detailTenant } from '@/pages/system/tenant/api'
 @Component({
   name: 'TenantList',
   components: {
@@ -207,7 +207,7 @@ export default class extends Vue {
   // 获取数据
   private async getList() {
     this.listLoading = true
-    const { data } = await getTenantList({ ...this.searchData })
+    const { data } = await getList({ ...this.searchData })
     if (data.isSuccess === true) {
       this.dataTable = data.data.list
       this.total = Number(data.data.total)

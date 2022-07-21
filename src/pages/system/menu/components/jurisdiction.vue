@@ -201,7 +201,6 @@ export default class extends Vue {
   }
   // 单个删除
   private handleDelete(row: any) {
-    // this.el.table.toggleRowSelection(row, true)
     this.deleData = row
     this.dialog.isDeleVisible = true
   }

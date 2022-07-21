@@ -124,7 +124,6 @@ import { ElForm } from 'element-ui/types/form'
 // 表单验证
 import { validateAccounts, validateName, validateEmail, validatePhone } from '@/utils/validate'
 // 公用组件
-import UploadImage from '@/components/UploadImage/index.vue'
 import SelectTree from '@/components/SelectTree/index.vue'
 import BaseDialog from '@/components/BaseStatus/index.vue'
 // api
@@ -133,7 +132,6 @@ import { addUser, editUser, resetUser } from '@/pages/system/user/api'
 @Component({
   name: 'UserAddDialog',
   components: {
-    UploadImage,
     SelectTree,
     BaseDialog
   }
@@ -141,7 +139,7 @@ import { addUser, editUser, resetUser } from '@/pages/system/user/api'
 export default class extends Vue {
   // 角色验证
   private validateRole = (rule: any, value: string, callback: Function) => {
-    if (value && value.length === 0) {
+    if (value === undefined || value === '' || value.length === 0) {
       callback(new Error('请选择角色'))
     } else {
       callback()

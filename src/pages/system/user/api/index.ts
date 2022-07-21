@@ -20,7 +20,7 @@ export const getDownList = (params: any) =>
 // 根据条件获取用户列表
 export const getUserList = (params: any) =>
   request({
-    url: `/system/users`,
+    url: `/system/users/list`,
     method: 'get',
     params
   })
@@ -48,6 +48,13 @@ export const disableUser = (id: any) =>
 export const editUserRole = (data: any) =>
   request({
     url: `/system/users/role`,
+    method: 'put',
+    data
+  })
+// 用户分配租户
+export const editUserTenant = (data: any) =>
+  request({
+    url: `/system/users/tenant`,
     method: 'put',
     data
   })

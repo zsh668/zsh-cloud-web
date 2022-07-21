@@ -66,8 +66,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 // 获取token
 import { getToken } from '@/utils/cookies'
-// api接口
-import { exportExle } from '@/api/api'
 // 组件
 import FailDilalog from './components/index.vue'
 @Component({

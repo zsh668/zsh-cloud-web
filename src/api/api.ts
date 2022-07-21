@@ -29,16 +29,9 @@ export const exportExle = (data: any) =>
     data
   })
 // 角色
-export const getRole = (data: any) =>
-  request({
-    url: `/system/roles/findAllRoles`,
-    method: 'get',
-    data
-  })
-// 角色
 export const getRepelRole = (params: any) =>
   request({
-    url: `/system/roles`,
+    url: `/system/roles/list`,
     method: 'get',
     params
   })

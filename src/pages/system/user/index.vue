@@ -203,6 +203,13 @@
                       >
                         分配角色
                       </el-dropdown-item>
+                      <el-dropdown-item v-if="currentUserData.id === '1' && row.id !== '1' && $hasPermission('user:update-tenant')" class="inputText"
+                                        :disabled="!row.status"
+                                        icon="el-icon-refresh" style="color: #009EFF;"
+                                        @click.native="handleEditTenant(row.id)"
+                      >
+                        分配租户
+                      </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
                 </div>
@@ -240,6 +247,15 @@
           :role-data="roleData"
           :user-data="editData"
           @close="handleRoleClose"
+          @getList="getList"
+        />
+        <!-- 用户分配租户对话框 -->
+        <user-tenant-dialog
+          ref="userTenantDialog"
+          :dialog="tenantDialog"
+          :tenant-data="tenantData"
+          :user-data="editData"
+          @close="handleTenantClose"
           @getList="getList"
         />
         <!-- end -->
@@ -301,6 +317,8 @@ import UploadFile from '@/components/UploadFile/index.vue'
 import UserAddDialog from './components/add.vue'
 // 分配角色弹层
 import UserRoleDialog from './components/role.vue'
+// 分配租户弹层
+import UserTenantDialog from './components/tenant.vue'
 // 用户详情查看
 import UserDetailDialog from './components/detail.vue'
 import ModuleTip from '@/components/ModuleTip/index.vue'
@@ -312,6 +330,7 @@ import {
   IManageUserPageListEntity,
   IUserFreezeRequest
 } from '@/pages/system/user/interface/types'
+import { getUser } from '@/utils/cookies'
 // api
 import { getRepelRole, getAllTree } from '@/api/api'
 import {
@@ -321,6 +340,7 @@ import {
   disableUser, getUserList, resetUser, getDownList, downTemplateFile
 } from '@/pages/system/user/api'
 import download from '@/utils/download'
+import { getTenantList } from '@/pages/system/tenant/api'
 
 @Component({
   name: 'UserList',
@@ -333,7 +353,8 @@ import download from '@/utils/download'
     UserDetailDialog,
     BaseDialog,
     ModuleTip,
-    UserRoleDialog
+    UserRoleDialog,
+    UserTenantDialog
   }
 })
 export default class extends Vue {
@@ -343,8 +364,10 @@ export default class extends Vue {
   private listLoading = true
   private delectData = []
   private roleData: ICommonSelectOptions[] = []
+  private currentUserData = {}
   private orgData = []
   private superiorData = []
+  private tenantData = []
   private deleData = {} as any
   private ref: any = this.$refs
   private treeData = {
@@ -374,6 +397,18 @@ export default class extends Vue {
     importUrl: ''
   }
   private roleDialog = {
+    id: '',
+    msg: '',
+    isVisible: false,
+    isViewVisible: false,
+    isFileVisible: false,
+    isDeleVisible: false,
+    isStatusVisible: false,
+    type: 'editRole',
+    status: false,
+    title: ''
+  }
+  private tenantDialog = {
     id: '',
     msg: '',
     isVisible: false,
@@ -450,13 +485,16 @@ export default class extends Vue {
 
   /// 生命周期
   mounted() {
+    // 获取用户信息
+    const users:any = getUser()
+    this.currentUserData = JSON.parse(users.toString())
   }
-
   created() {
     this.getList()
     this.getRole()
     this.getOrg()
     this.getSuperiorData()
+    this.getTenant()
   }
 
   /// // 功能函数 /////
@@ -485,7 +523,7 @@ export default class extends Vue {
   private async getRole() {
     const { data } = await getRepelRole({ status: '' })
     if (data.isSuccess === true) {
-      this.roleData = data.data.list
+      this.roleData = data.data
       this.roleData.forEach((item: any) => {
         item.disabled = false
         if (item.status === false) {
@@ -514,8 +552,22 @@ export default class extends Vue {
   private async getSuperiorData() {
     const { data } = await getUserList({})
     if (data.isSuccess === true) {
-      this.superiorData = data.data.list
+      this.superiorData = data.data
       this.superiorData.forEach((item: any) => {
+        item.disabled = false
+        if (item.status === false) {
+          item.disabled = true
+        }
+      })
+    }
+  }
+
+  // 获取租户列表
+  private async getTenant() {
+    const { data } = await getTenantList({})
+    if (data.isSuccess === true) {
+      this.tenantData = data.data
+      this.tenantData.forEach((item: any) => {
         item.disabled = false
         if (item.status === false) {
           item.disabled = true
@@ -632,6 +684,14 @@ export default class extends Vue {
     this.getEdit(id)
   }
 
+  // 修改租户
+  handleEditTenant(id: string) {
+    this.tenantDialog.type = 'editTenant'
+    this.tenantDialog.title = '分配租户'
+    this.tenantDialog.isVisible = true
+    this.getEdit(id)
+  }
+
   // 重置密码
   handleReset(id: string) {
     this.dialogData.id = id
@@ -701,6 +761,11 @@ export default class extends Vue {
 
   // 关闭分配角色弹框
   handleRoleClose() {
+    this.roleDialog.isVisible = false
+  }
+
+  // 关闭分配角色弹框
+  handleTenantClose() {
     this.roleDialog.isVisible = false
   }
 

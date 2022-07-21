@@ -91,9 +91,9 @@ request({
   method: 'get'
 })
 // 删除菜单
-export const deleteJurisdiction = (params: any) =>
+export const deleteJurisdiction = (data: any) =>
 request({
   url: `/system/resources`,
   method: 'delete',
-  params
+  data
 })
