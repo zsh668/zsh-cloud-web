@@ -65,7 +65,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 // 获取token
-import { getToken } from '@/utils/cookies'
+import { getTenant, getToken } from '@/utils/cookies'
 // 组件
 import FailDilalog from './components/index.vue'
 @Component({
@@ -85,7 +85,8 @@ export default class extends Vue {
   el: any = this.$refs
   get myheader() {
     return {
-      'Authorization': 'Bearer ' + getToken()
+      'Authorization': 'Bearer ' + getToken(),
+      'tenant_id': getTenant()
     }
   }
 

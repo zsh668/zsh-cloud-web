@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-if="dialog.isViewVisible"
-    class="user-unfreeze-dialog userView"
+    class="user-unfreeze-dialog userView logView"
     title="查看"
     :visible.sync="dialog.isViewVisible"
     :before-close="handleClose"
@@ -45,7 +45,7 @@
           <label>消耗时间（ms）：</label>{{ editData.consumingTime }}
         </li>
         <li>
-          <label>终端|浏览器：</label>{{ editData.ua }}
+          <label>终端|浏览器：</label>{{ uaForamt(editData.ua) }}
         </li>
         <li style="width: 100% !important;">
           <label>返回值：</label>{{ editData.result }}
@@ -67,6 +67,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
+import { readUserAgent } from '@/utils'
 
 @Component({
   name: 'DetailDialog',
@@ -81,8 +82,16 @@ export default class extends Vue {
   private handleClose() {
     this.dialog.isViewVisible = false
   }
+  uaForamt(value: any) {
+    if (value !== undefined) {
+      let ua = readUserAgent(value)
+      return ua.terminal + '  |  ' + ua.browser
+    } else {
+      return ''
+    }
+  }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 </style>

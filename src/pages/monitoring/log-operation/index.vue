@@ -59,32 +59,32 @@
             highlight-current-row
             @filter-change="filterData"
           >
-            <!-- <el-table-column type="selection" width="45" align="center" /> -->
             <el-table-column align="center" width="80" type="index" label="">
               <template slot="header">
                 <span> | 序号 </span>
               </template>
             </el-table-column>
-            <el-table-column align="center" width="120">
+            <el-table-column align="center" width="80">
               <template slot="header">
                 <span> | 姓名 </span>
               </template>
-              <template slot-scope="{ row }" width="120">
+              <template slot-scope="{ row }">
                 <span>{{ row.userName }}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" width="120">
+            <el-table-column align="center" width="150">
               <template slot="header">
                 <span> | 请求地址 </span>
               </template>
-              <template slot-scope="{ row }" width="120">
-                <span>{{ row.requestUri }}</span>
+              <template slot-scope="{ row }">
+                <el-tooltip :content="row.requestUri" placement="top">
+                  <span>{{ ellipsis(row.requestUri, 15) }}</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
               label=""
               align="center"
-              width="120"
               column-key="httpMethod"
               prop="httpMethod"
               :filter-multiple="false"
@@ -102,7 +102,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column align="center" width="120">
+            <el-table-column align="center" width="100">
               <template slot="header">
                 <span> | IP </span>
               </template>
@@ -146,7 +146,7 @@
                 <span> | 请求方法 </span>
               </template>
               <template slot-scope="{ row }">
-                <span>{{ ellipsis(row.actionMethod, 30) }}</span>
+                <span>{{ row.actionMethod }}</span>
               </template>
             </el-table-column>
             <el-table-column width="150">
@@ -179,7 +179,7 @@
                 <span>{{ uaForamt(row.ua) }}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" width="160">
+            <el-table-column align="center">
               <template slot="header">
                 <span> | 操作 </span>
               </template>
@@ -194,8 +194,8 @@
           <pagination
             v-show="total > 0"
             :total="Number(total)"
-            :page.sync="pages.current"
-            :limit.sync="pages.size"
+            :page.sync="searchData.current"
+            :limit.sync="searchData.size"
             @pagination="getList"
           />
           <!-- end -->
@@ -262,10 +262,6 @@ export default class extends Vue {
     title: ''
   }
   private ivewData = {}
-  private pages={
-    size: 10,
-    current: 1
-  } as any
   /// 生命周期
   created() {
     this.initData()

@@ -16,7 +16,7 @@
     <el-form-item label="电话：" prop="mobile">
       <el-input v-model="userInfo.mobile" />
     </el-form-item>
-    <el-form-item label="性别：" class="boxPt">
+    <el-form-item label="性别：" prop="gender">
       <el-radio-group v-model="userInfo.gender">
         <el-radio :label="1">男</el-radio>
         <el-radio :label="2">女</el-radio>
