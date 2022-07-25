@@ -812,3 +812,8 @@ div:focus {
   margin: 10px;
   background: #f8f8f8;
 }
+.logView {
+  .el-dialog {
+    max-width: 900px !important
+  }
+}
