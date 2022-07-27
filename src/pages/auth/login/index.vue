@@ -98,7 +98,7 @@ import { UserModule } from '@/store/modules/user'
 // 用户信息
 import { setToken, setUser, setTenant } from '@/utils/cookies'
 // 随机码
-import { randomNum } from '@/utils'
+import { loginJseEncode, randomNum } from '@/utils'
 // api接口
 import { getCode, loginInfo } from '@/pages/auth/base/api/api'
 
@@ -205,7 +205,13 @@ export default class extends Vue {
       let userInfo = {} as any
       if (valid) {
         this.loading = true
-        const res = await UserModule.Login(this.loginForm)
+        let param = {
+          account: this.loginForm.account,
+          code: this.loginForm.code,
+          key: this.loginForm.key,
+          password: loginJseEncode(this.loginForm.password)
+        } as any
+        const res = await UserModule.Login(param)
         if (res.isSuccess) {
           await UserModule.GetUserInfo()
           userInfo.userId = res.data.userId
@@ -233,6 +239,7 @@ export default class extends Vue {
         // 记录日志
         const { data } = await loginInfo(params)
       } else {
+        this.loading = false
         return false
       }
     })
