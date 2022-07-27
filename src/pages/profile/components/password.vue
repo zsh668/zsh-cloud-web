@@ -22,7 +22,7 @@
   </el-form>
 </template>
 <script>
-import { changePassword } from '@/pages/system/user/api'
+import { loginJseEncode } from '@/utils'
 
 export default {
   props: {
@@ -81,10 +81,11 @@ export default {
     submit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          debugger
-          changePassword({
-              ...this.p,
-              ...{ id: this.user.id }
+          this.p.password = loginJseEncode(this.p.password)
+          this.p.newPassword = loginJseEncode(this.p.newPassword)
+          this.p.confirmPassword = loginJseEncode(this.p.confirmPassword)
+          this.changePassword({
+              ...this.p
             })
             .then(response => {
               const res = response.data

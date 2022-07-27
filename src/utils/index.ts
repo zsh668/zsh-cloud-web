@@ -1,4 +1,5 @@
 import store from '@/store'
+import JSEncrypt from 'jsencrypt'
 
 // key
 export function randomNum(len: number, radix: number) {
@@ -63,6 +64,14 @@ export const randomWord = (randomFlag: boolean, min: number, max: number) => {
     str += arr[pos]
   }
   return str
+}
+
+// rsa+base64 加密
+export const loginJseEncode = function(str: any) {
+  let encryptor = new JSEncrypt()
+  let rsaPublicKey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOwmFtEk1oJxDU0NI4kVO0Jx0Xnt+Abx+JKGUzcRzPwjUkd5z9Ice5rh87CCmj0XjZ5pPac6TtA3f0v5FqiK/kjQY5XMLti4weJ4dcp1/q1O7PCYxRX8WgetGxwsjxGn+uoZOZkclN1PFS4wRnKEso6+G/e60QGB29cZoo4jZnZwIDAQAB'
+  encryptor.setPublicKey(rsaPublicKey)
+  return encryptor.encrypt(str)
 }
 
 // 按钮权限
